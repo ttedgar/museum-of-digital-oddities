@@ -6,12 +6,57 @@
     "idea": "A fake system dialog box that is earnestly trying to defragment, compress, and optimize your sadness like it's a hard drive. Progress bars inch forward, tasks complete one by one (Locating Childhood Wound... Patching self-worth.dll...), and just when it's about to complete, an error occurs and it must start over. Infinite, sincere, and deeply unsettling.",
     "plan": {
       "title": "Processing Your Sadness",
-      "components": ["Dialog window", "Progress bar", "Task list with checkmarks", "Error modal"],
-      "state": ["currentTaskIndex", "progress", "completedTasks", "hasError", "errorMessage", "runCount"],
-      "effects": ["Progress timer that advances and completes tasks", "Error trigger near completion", "Auto-restart after error"],
-      "interactions": ["Cancel button that does nothing", "OK button on error that restarts"],
+      "components": [
+        "Dialog window",
+        "Progress bar",
+        "Task list with checkmarks",
+        "Error modal"
+      ],
+      "state": [
+        "currentTaskIndex",
+        "progress",
+        "completedTasks",
+        "hasError",
+        "errorMessage",
+        "runCount"
+      ],
+      "effects": [
+        "Progress timer that advances and completes tasks",
+        "Error trigger near completion",
+        "Auto-restart after error"
+      ],
+      "interactions": [
+        "Cancel button that does nothing",
+        "OK button on error that restarts"
+      ],
       "visual_style": "Windows 98/XP era dialog box aesthetic, centered on a dark desktop background",
       "implementation_notes": "Use CSS to simulate old Windows dialog chrome. Animate progress bar with setInterval. Each task takes varying time. Error at ~95% completion."
+    }
+  },
+  {
+    "date": "2026-04-03",
+    "title": "You Have Been Selected",
+    "description": "The user receives an increasingly desperate series of official-looking notifications informing them they have won an award that no one can quite describe, from an organization that keeps changing its name.",
+    "idea": "The page opens with a formal congratulatory letter — gold seal, dignified serif font — announcing the user has won 'The Award.' But each time they click to accept or learn more, a new letter arrives that subtly contradicts the last: the awarding body has a different name, the prize has changed (a feeling? a specific Tuesday? 'all the medium-sized rocks'), and the tone grows increasingly frantic and needy, as if the organization desperately needs the user to accept this award or something terrible will happen to them. By the tenth letter the formatting is falling apart, the seal is just a potato drawing, and the organization is begging. The joke is that nothing is ever explained and accepting does nothing — the next letter just arrives anyway.",
+    "plan": {
+      "title": "You Have Been Selected",
+      "state_variables": [
+        "letterIndex: number tracking which letter (0-9) is currently displayed",
+        "isTransitioning: boolean for letter swap animation state",
+        "acceptCount: number of times user has clicked accept (for subtle desperation escalation)",
+        "sealRotation: number for increasingly wonky seal rotation angle"
+      ],
+      "effects": [
+        "On letterIndex change, trigger brief fade-out/fade-in transition by toggling isTransitioning with a setTimeout",
+        "On mount, set a subtle paper texture background via body style, cleaned up on unmount"
+      ],
+      "key_interactions": [
+        "Click 'Accept This Honor' or 'Learn More' button — advances letterIndex, increments acceptCount, triggers transition",
+        "At letter 9 (final), button still works but loops back or shows a final broken state with the same desperate letter re-rendering with slight mutations",
+        "Seal element is clickable and wobbles/spins on click as a meaningless interaction"
+      ],
+      "visual_style": "Starts as cream parchment with deep navy text, gold embossed seal, elegant serif font — progressively degrades to off-white with Comic Sans-adjacent inline font, red urgent text, skewed/rotated elements, a potato SVG replacing the seal, and increasingly large/bold desperate typography. Formal → unhinged.",
+      "key_implementation_notes": "Store all 10 letter configs in a static array of objects containing: orgName, awardName, prizeDescription, bodyText, tone (affects color/font/layout), sealType (SVG circle with initials vs inline potato SVG path), and buttonLabel. Derive visual degradation (font-family, border-style, color, transform skew) from letterIndex using interpolation so styles smoothly worsen. The seal should be an inline SVG that morphs from a crisp circular emblem to a lumpy potato outline using different SVG paths per stage. Use CSS transitions via inline style transitionProperty on the letter container div for the fade effect managed by isTransitioning state."
     }
   }
 ]
