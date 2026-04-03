@@ -1,0 +1,33 @@
+name: Generate Daily Page
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch: # allow manual trigger from Actions tab
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - name: Generate page
+        run: npm run generate
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/generated/
+          git diff --staged --quiet || git commit -m "exhibit: $(date +%Y-%m-%d)"
+          git push
