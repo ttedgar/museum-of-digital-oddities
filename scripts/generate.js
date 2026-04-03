@@ -233,6 +233,16 @@ function cleanCode(raw) {
     code = code.slice(importStart);
   }
 
+  // Fix: remove any non-react imports (e.g. `import style from 'style'`)
+  code = code.replace(/^import\s+.*from\s+['"](?!react['"/]).*['"];?\n?/gm, '');
+
+  // Fix: `const Page = export default function Page()` → `export default function Page()`
+  code = code.replace(/const\s+\w+\s*=\s*(export\s+default\s+function)/g, '$1');
+
+  // Fix: `export const Page = function()` or `export default Page` at end without inline def
+  // Normalize to a clean export default function Page
+  code = code.replace(/export\s+default\s+function\s+\w+\s*\(/, 'export default function Page(');
+
   return code.trim();
 }
 

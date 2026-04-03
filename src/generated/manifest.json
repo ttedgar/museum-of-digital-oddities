@@ -6,53 +6,12 @@
     "idea": "A fake system dialog box that is earnestly trying to defragment, compress, and optimize your sadness like it's a hard drive. Progress bars inch forward, tasks complete one by one (Locating Childhood Wound... Patching self-worth.dll...), and just when it's about to complete, an error occurs and it must start over. Infinite, sincere, and deeply unsettling.",
     "plan": {
       "title": "Processing Your Sadness",
-      "components": [
-        "Dialog window",
-        "Progress bar",
-        "Task list with checkmarks",
-        "Error modal"
-      ],
-      "state": [
-        "currentTaskIndex",
-        "progress",
-        "completedTasks",
-        "hasError",
-        "errorMessage",
-        "runCount"
-      ],
-      "effects": [
-        "Progress timer that advances and completes tasks",
-        "Error trigger near completion",
-        "Auto-restart after error"
-      ],
-      "interactions": [
-        "Cancel button that does nothing",
-        "OK button on error that restarts"
-      ],
+      "components": ["Dialog window", "Progress bar", "Task list with checkmarks", "Error modal"],
+      "state": ["currentTaskIndex", "progress", "completedTasks", "hasError", "errorMessage", "runCount"],
+      "effects": ["Progress timer that advances and completes tasks", "Error trigger near completion", "Auto-restart after error"],
+      "interactions": ["Cancel button that does nothing", "OK button on error that restarts"],
       "visual_style": "Windows 98/XP era dialog box aesthetic, centered on a dark desktop background",
       "implementation_notes": "Use CSS to simulate old Windows dialog chrome. Animate progress bar with setInterval. Each task takes varying time. Error at ~95% completion."
-    }
-  },
-  {
-    "date": "2026-04-03",
-    "title": "Singing Shadows",
-    "description": "You walk into a room where your reflection hums a lullaby only it can hear, and it whispers answers that may or may not be yours.",
-    "idea": "A minimalist, single-page page showing a flickering shadow that speaks in reversed sentences. Tapping a shadow reveals fragmented memories or absurd truths. The interaction feels like peeking into a broken television that speaks back in your own voice, challenging what you believe about identity and silence.",
-    "plan": {
-      "title": "Singing Shadows",
-      "state_variables": [
-        "flickerState: boolean to control shadow's flickering (true/false)",
-        "whisperText: string containing reversed/absurd phrases"
-      ],
-      "effects": [
-        "Interval-based flicker toggle on mount/unmount",
-        "Text reversal/whisper generation on tap"
-      ],
-      "key_interactions": [
-        "Tap shadow to reveal new fragmented memory/absurd truth"
-      ],
-      "visual_style": "Dark gradient background (#0a0a2f) with semi-transparent shadow (#5555ff at 30% opacity) that flickers. Whispers appear in pale silver text (#cce6ff) with reversed word order.",
-      "key_implementation_notes": "Uses setInterval for flicker effect via inline opacity changes. Touch events handle mobile compatibility. Whisper phrases are predefined array sliced/reversed on tap.useCallback optimizes tap handler performance."
     }
   }
 ]
