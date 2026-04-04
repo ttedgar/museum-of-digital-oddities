@@ -58,5 +58,33 @@
       "visual_style": "Starts as cream parchment with deep navy text, gold embossed seal, elegant serif font — progressively degrades to off-white with Comic Sans-adjacent inline font, red urgent text, skewed/rotated elements, a potato SVG replacing the seal, and increasingly large/bold desperate typography. Formal → unhinged.",
       "key_implementation_notes": "Store all 10 letter configs in a static array of objects containing: orgName, awardName, prizeDescription, bodyText, tone (affects color/font/layout), sealType (SVG circle with initials vs inline potato SVG path), and buttonLabel. Derive visual degradation (font-family, border-style, color, transform skew) from letterIndex using interpolation so styles smoothly worsen. The seal should be an inline SVG that morphs from a crisp circular emblem to a lumpy potato outline using different SVG paths per stage. Use CSS transitions via inline style transitionProperty on the letter container div for the fade effect managed by isTransitioning state."
     }
+  },
+  {
+    "date": "2026-04-04",
+    "title": "Translate This Feeling Into Livestock",
+    "description": "A bureaucratic form from the Ministry of Approximate Emotions insists your feelings are measurable in goats.",
+    "idea": "The user is presented with an official-looking government form titled 'Emotional Livestock Conversion Request (Form EL-7C).' They select a feeling from a dropdown (options include 'that specific dread when you remember an email from 2014,' 'the warmth of a stranger's sneeze,' and 'being perceived') and the form solemnly calculates how many goats, geese, or draft horses their feeling is equivalent to. The conversion logic is maddeningly specific — 3.7 goats, 'one goose with reservations,' 'a horse that is mostly regret.' Each result comes with official footnotes citing fake legislation and a stern warning that the Ministry does not accept appeals. A small stamp animates onto the page. Nothing is explained. The form resets and politely asks if you have another feeling to convert.",
+    "plan": {
+      "title": "Translate This Feeling Into Livestock",
+      "state_variables": [
+        "selectedFeeling: string — currently chosen feeling from dropdown",
+        "result: object|null — { livestock: string, quantity: string, footnotes: string[], warning: string } after conversion",
+        "isCalculating: boolean — brief delay state to simulate bureaucratic processing",
+        "showStamp: boolean — triggers stamp animation after result appears",
+        "formKey: number — incremented to reset form smoothly"
+      ],
+      "effects": [
+        "When isCalculating becomes true, set a 1.8s timeout to compute result from a hardcoded lookup map, then set result and trigger showStamp",
+        "When showStamp becomes true, set a 300ms timeout to add 'stamped' visual state (rotation + opacity settle)"
+      ],
+      "key_interactions": [
+        "Dropdown onChange updates selectedFeeling and clears any previous result",
+        "Submit button triggers isCalculating state and shows processing indicator",
+        "After result displays with stamp animation, a 'Convert Another Feeling' button resets by incrementing formKey and clearing result/selectedFeeling",
+        "Stamp element animates from scale(2) opacity(0) rotated to scale(1) opacity(1) slightly rotated using CSS transition via inline style toggling"
+      ],
+      "visual_style": "Aged government document aesthetic — off-white/cream background (#f5f0e8), dark navy text (#1a2340), serif fonts, thin borders, faded red stamp ink (#8b1a1a). Dense bureaucratic layout with form fields, section dividers, fine print. Slightly yellowed paper feel. Official seal placeholder using unicode/emoji. Austere, deadpan, institutional.",
+      "key_implementation_notes": "Store all feeling-to-livestock conversions as a hardcoded object map with keys matching dropdown values, each entry containing quantity string, livestock array, footnotes array citing fake Acts and Directives, and a stern Ministry warning — all authored for comic specificity. The stamp is an absolutely positioned div with text 'PROCESSED — MINISTRY OF APPROXIMATE EMOTIONS' rotated ~-15deg, rendered in red with border, toggling between pre/post animation inline styles via showStamp+stamped booleans. Use a formKey as the key prop on the form container to force clean remount on reset. The isCalculating state shows a blinking 'PROCESSING REQUEST...' message with ellipsis animation via a setInterval updating a dot-count state."
+    }
   }
 ]
