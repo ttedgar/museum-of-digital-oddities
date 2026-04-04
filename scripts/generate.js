@@ -88,9 +88,10 @@ async function chat(label, systemPrompt, userPrompt, temperature = 0.9) {
 
 async function generateIdea(manifest) {
   const historyText = manifest.length > 0
-    ? `PREVIOUSLY GENERATED IDEAS — do not repeat these concepts:\n${manifest.map((p, i) =>
-        `${i + 1}. [${p.date}] "${p.title}": ${p.idea}`
-      ).join('\n')}`
+    ? `PREVIOUSLY GENERATED IDEAS — do not repeat these concepts or visual styles:\n${manifest.map((p, i) => {
+        const visual = p.plan?.visual_style ? ` | Visual: ${p.plan.visual_style}` : '';
+        return `${i + 1}. [${p.date}] "${p.title}": ${p.idea}${visual}`;
+      }).join('\n')}`
     : 'No previous ideas yet. Go wild.';
 
   const system = `You are the head curator of the Museum of Digital Oddities — a deranged, inspired creative director who generates concepts for single-page web experiences that are weird, surreal, uncanny, funny, absurd, and mind-bending.
