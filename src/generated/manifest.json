@@ -125,5 +125,33 @@
       "visual_style": "Near-black background (#0a0806). Mouth rendered purely in CSS/divs — fleshy pinks and wet reds (#c97b7b, #8b2020, #f0c0b0), slightly desaturated and wrong. Lips slightly too large. Text responses appear in a pale, serif-like monospace below. Overall mood: intimate, wrong, uncomfortably aware.",
       "key_implementation_notes": "Mouth shape built entirely from CSS border-radius div layers — upper lip, lower lip, teeth strip, dark throat — animated via inline style transforms and mouthOpenAmount state. Editorial comments stored as a large hardcoded lookup table keyed by emotionalRegister + interactionCount bucket, with template slots for previousWordHints to fake memory. Mouse position tracked via onMouseMove on container to drive subtle mouth-lean transform. All 'memory' is purely generative illusion — previousWordHints stores only 2 fragments from recent inputs to splice into pre-written editorial strings, making the mouth seem to recall without actually storing anything meaningful."
     }
+  },
+  {
+    "date": "2026-04-06",
+    "title": "Obituaries for Abandoned Tabs",
+    "description": "Each window held a small intention. The intention has since become a mineral.",
+    "idea": "The screen presents itself as a solemnly designed memorial website for browser tabs the user never got around to reading. On load, it generates a fresh batch of deceased tabs — each with a fabricated title, a date opened, a date of abandonment, and a brief eulogy written in the sincere, florid style of a small-town newspaper obituary. 'Tab #4,891 — \"How Long Can Shrimp Live On Land?\" — opened Tuesday at 2:14am, survived by 47 of its siblings, never got the answer it deserved.' Users can click a small flower icon to 'pay respects,' which triggers a micro-animation of a pixel flower wilting onto the tab's card. A counter at the top silently increments, tracking how many tabs have died worldwide since the page loaded — a number that is completely fabricated and disturbingly large. The longer you stay, the more the eulogies start to sound like they're about you.",
+    "plan": {
+      "title": "Obituaries for Abandoned Tabs",
+      "state_variables": [
+        "tabs: array of generated deceased tab objects (title, opened, abandoned, eulogy, respects count, wilting state)",
+        "worldwideDeaths: large fabricated counter incrementing over time",
+        "startTime: timestamp when page loaded for escalating personalization",
+        "wiltingTabs: Set of tab ids currently mid-wilt animation",
+        "respectsPaid: Set of tab ids user has already paid respects to"
+      ],
+      "effects": [
+        "On mount: generate 6-8 tab obituary objects using curated absurd-but-plausible title lists and procedural eulogy templates",
+        "setInterval every 47ms: increment worldwideDeaths by random 1-7 to feel disturbingly real",
+        "setInterval every 90s: mutate one random eulogy to subtly shift second-person, replacing 'the tab' with 'you' or 'they say you once'"
+      ],
+      "key_interactions": [
+        "Click flower icon on a card: add to wiltingTabs, trigger CSS keyframe-like inline style transition of flower drooping, increment that tab's respects count, add to respectsPaid set",
+        "Hover over a card: slightly brighten the card border, show a thin black mourning ribbon overlay effect",
+        "Scroll behavior: cards fade in sequentially with a somber downward drift entrance animation via useEffect + setTimeout stagger"
+      ],
+      "visual_style": "Cream/ivory background (#f5f0e8), deep charcoal text (#1a1a1a), muted black borders, thin serif font feel via font-family Georgia. Sparse layout like a newspaper memorial section. Flower emoji as pixel stand-in. Header in small-caps. Overall mood: sincere, hushed, slightly uncanny.",
+      "key_implementation_notes": "Generate eulogies from a template engine that splices tab title, fake timestamps, sibling count, and cause-of-death phrases — with a personalization array that swaps in second-person language based on elapsed time since mount (tracked via Date.now() diff). Wilt animation is handled by toggling inline transform/opacity on a flower span via a timeout sequence stored in useRef. Tab titles should be drawn from a hand-curated pool of 40+ plausible-but-poignant queries ('Why do I keep doing this', 'Flights to somewhere', 'Is it too late to') to maximize the uncanny valley of recognition. The worldwide counter should start at a seeded large number (e.g. 847 million + offset) so it feels cosmically indifferent."
+    }
   }
 ]
