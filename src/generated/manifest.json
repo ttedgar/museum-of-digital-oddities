@@ -153,5 +153,34 @@
       "visual_style": "Cream/ivory background (#f5f0e8), deep charcoal text (#1a1a1a), muted black borders, thin serif font feel via font-family Georgia. Sparse layout like a newspaper memorial section. Flower emoji as pixel stand-in. Header in small-caps. Overall mood: sincere, hushed, slightly uncanny.",
       "key_implementation_notes": "Generate eulogies from a template engine that splices tab title, fake timestamps, sibling count, and cause-of-death phrases — with a personalization array that swaps in second-person language based on elapsed time since mount (tracked via Date.now() diff). Wilt animation is handled by toggling inline transform/opacity on a flower span via a timeout sequence stored in useRef. Tab titles should be drawn from a hand-curated pool of 40+ plausible-but-poignant queries ('Why do I keep doing this', 'Flights to somewhere', 'Is it too late to') to maximize the uncanny valley of recognition. The worldwide counter should start at a seeded large number (e.g. 847 million + offset) so it feels cosmically indifferent."
     }
+  },
+  {
+    "date": "2026-04-07",
+    "title": "The Gravity of Your Last Gesture",
+    "description": "A room full of objects that fell when you weren't looking. They are still falling. They want credit.",
+    "idea": "The screen shows a sparse, infinite white room rendered in forced perspective. Objects — a lamp, a briefcase, a ceramic owl, a single shoe — are frozen mid-fall at various angles, suspended impossibly. When the user clicks any object, it continues falling in slow motion, rotating realistically, while a deadpan caption appears explaining WHY it fell ('This lamp fell because you left a room in 2019 without saying goodbye to it. It has been falling since.'). The longer it falls, the more the explanation becomes existentially personal and specific, as though the object genuinely resents the user. Objects can collide with each other mid-fall, spawning new falling objects with increasingly unhinged genealogies. Nothing ever lands. The floor is theoretical. A small counter in the corner reads 'Objects Currently Falling On Your Behalf' and only ever goes up.",
+    "plan": {
+      "title": "The Gravity of Your Last Gesture",
+      "state_variables": [
+        "objects: array of object state {id, type, x, y, vx, vy, rotation, rotationSpeed, falling, fallDuration, caption, captionStage, scale, opacity}",
+        "fallingCount: total objects currently falling (only increments)",
+        "tick: animation frame counter for physics loop",
+        "activeCaption: {objectId, text, stage} for displayed caption",
+        "collisionQueue: pending collision-spawned objects to add next frame"
+      ],
+      "effects": [
+        "requestAnimationFrame loop: update y/rotation of all falling objects, detect pairwise collisions (distance threshold), spawn new objects on collision, increment tick",
+        "captionStage timer: every 4 seconds an actively-clicked object advances its captionStage, mutating caption text to more unhinged/personal content",
+        "on mount: initialize 6-8 static suspended objects scattered across the perspective room at varied sizes/angles"
+      ],
+      "key_interactions": [
+        "Click suspended object: set falling=true, begin slow vx/vy descent, show stage-0 deadpan caption, increment fallingCount",
+        "Click already-falling object: jump to next captionStage immediately, show more unhinged caption variant",
+        "Collision detection: when two falling objects come within threshold, spawn a new suspended object between them with a genealogy caption referencing both parents",
+        "Hover object: subtle wobble animation via rotation oscillation to suggest instability"
+      ],
+      "visual_style": "Stark white background with faint perspective grid lines converging to a vanishing point. Objects drawn as simple emoji or Unicode glyphs at varied scales to fake depth. Captions appear in small serif italic below objects, dark charcoal, clinical tone. Counter top-left in monospace. Minimal, museum-quiet, slightly wrong.",
+      "key_implementation_notes": "Render objects as absolutely positioned divs with CSS transform rotate+translate, using scale to fake perspective depth (larger = closer). Physics uses simple Euler integration with very low gravity constant (~0.02) and slight horizontal drift for realism. Caption text stored as arrays of escalating strings per object type, indexed by captionStage (0-4+), generated from templates that become increasingly second-person accusatory. Collision uses Euclidean distance between object centers; spawned children inherit averaged position with random offset and combine parent captions into absurdist lineage strings."
+    }
   }
 ]
