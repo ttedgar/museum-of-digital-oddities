@@ -182,5 +182,33 @@
       "visual_style": "Stark white background with faint perspective grid lines converging to a vanishing point. Objects drawn as simple emoji or Unicode glyphs at varied scales to fake depth. Captions appear in small serif italic below objects, dark charcoal, clinical tone. Counter top-left in monospace. Minimal, museum-quiet, slightly wrong.",
       "key_implementation_notes": "Render objects as absolutely positioned divs with CSS transform rotate+translate, using scale to fake perspective depth (larger = closer). Physics uses simple Euler integration with very low gravity constant (~0.02) and slight horizontal drift for realism. Caption text stored as arrays of escalating strings per object type, indexed by captionStage (0-4+), generated from templates that become increasingly second-person accusatory. Collision uses Euclidean distance between object centers; spawned children inherit averaged position with random offset and combine parent captions into absurdist lineage strings."
     }
+  },
+  {
+    "date": "2026-04-08",
+    "title": "The Bureau of Unfinished Gestures",
+    "description": "A wave that never arrived. The hand remembers departing but cannot locate the destination shoulder.",
+    "idea": "The screen presents a clinical government interface — 'PENDING GESTURE REGISTRY, Department of Incomplete Human Contact' — filled with a scrollable queue of gestures that were started but never finished: a hug that stopped at elbow-height in 2017, a high-five that was left hanging during a fiscal quarter, a tap on the shoulder that turned into a near-miss and a lifelong silence. Each entry is a form card with fields like GESTURE TYPE, INTENDED RECIPIENT (described only as 'a person near a refrigerator'), CURRENT STATUS ('hovering, 0.3 inches from contact, since March'), and a progress bar frozen at 94%. The user can click 'ATTEMPT COMPLETION' on any gesture, which triggers a slow, glitchy animation of two abstract limb-shapes lurching toward each other — then freezing again, just barely not touching, with a new bureaucratic error code: 'ERR_MOMENT_ELAPSED,' 'ERR_RECIPIENT_HAS_MOVED_ON,' 'ERR_THE_FEELING_CHANGED_SHAPE.' A new unfinished gesture is quietly added to the queue each time they try. The queue is described as 'current as of your last breath.'",
+    "plan": {
+      "title": "The Bureau of Unfinished Gestures",
+      "state_variables": [
+        "gestures: array of gesture entry objects (id, type, recipient, status, progress, errorCode, attempting)",
+        "attemptingId: id of gesture currently being animated",
+        "errorVisible: bool for showing error code overlay",
+        "totalAttempts: count of completion attempts (for queue growth)"
+      ],
+      "effects": [
+        "On mount: initialize with 5-7 hardcoded gesture entries",
+        "When attemptingId set: run a 3-second timeout — animate limbs lurching via interpolated style, then freeze, set errorCode, add new gesture to queue, clear attemptingId"
+      ],
+      "key_interactions": [
+        "Click ATTEMPT COMPLETION: set attemptingId, trigger limb animation sequence",
+        "Scroll through gesture queue cards",
+        "Watch new gesture quietly append to bottom of queue after each failed attempt",
+        "Observe progress bar frozen at 87-96% per entry",
+        "Read error code that appears after animation freezes"
+      ],
+      "visual_style": "Pale institutional gray-green background (#e8ebe6), monospace fonts throughout, muted olive and beige card faces, red-orange error codes, clinical form aesthetics — think DMV meets medical records, cold fluorescent mood",
+      "key_implementation_notes": "Each gesture card is a form-like div with labeled fields rendered as mock input rows (read-only). The limb animation uses two absolutely-positioned SVG arc/curve shapes (abstract arm silhouettes) whose translateX values are driven by a useEffect interval that increments then abruptly halts a few pixels apart. Error codes are drawn from a fixed pool of ERR_ strings and displayed in a modal-style overlay with a case number. The queue array is the single source of truth — new entries are prepended with a 'NEWLY FILED' badge and a timestamp derived from Date.now()."
+    }
   }
 ]
