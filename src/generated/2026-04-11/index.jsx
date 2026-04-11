@@ -562,7 +562,7 @@ export default function Page() {
           animation: 'fadeIn 1s ease',
         }}>
           <div style={{
-            color: '#5a4a2a',
+            color: '#b8a070',
             fontSize: '13px',
             letterSpacing: '2px',
             fontStyle: 'italic',
@@ -572,7 +572,7 @@ export default function Page() {
             {furniture.name}
           </div>
           <div style={{
-            color: '#3a3020',
+            color: '#c8a860',
             fontSize: '48px',
             fontWeight: '100',
             letterSpacing: '8px',
@@ -581,20 +581,20 @@ export default function Page() {
             . . .
           </div>
           <div style={{
-            color: '#4a3a20',
+            color: '#a08858',
             fontSize: '11px',
             fontStyle: 'italic',
             marginTop: '32px',
-            opacity: 0.5,
+            opacity: 0.7,
           }}>
             {silenceSeconds}s of hurt silence
           </div>
           <div style={{
-            color: '#3a3020',
+            color: '#907848',
             fontSize: '12px',
             fontStyle: 'italic',
             marginTop: '16px',
-            opacity: 0.4,
+            opacity: 0.6,
           }}>
             something else is watching
           </div>
