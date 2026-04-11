@@ -429,7 +429,13 @@ export default function Page() {
   const furniture = FURNITURE_LETTERS[letterIndex % FURNITURE_LETTERS.length];
 
   const paperStyle = {
-    background: 'linear-gradient(180deg, #faf6ed 0%, #f5efe0 100%)',
+    backgroundColor: '#f5efe0',
+    backgroundImage: `linear-gradient(180deg, #faf6ed 0%, #f5efe0 100%), repeating-linear-gradient(
+      transparent,
+      transparent 29px,
+      rgba(180,160,120,0.18) 29px,
+      rgba(180,160,120,0.18) 30px
+    )`,
     border: '1px solid #d4c4a0',
     borderRadius: '2px',
     padding: '48px 52px',
@@ -439,12 +445,6 @@ export default function Page() {
     position: 'relative',
     fontFamily: '"Georgia", "Times New Roman", serif',
     lineHeight: '1.85',
-    backgroundImage: `repeating-linear-gradient(
-      transparent,
-      transparent 29px,
-      rgba(180,160,120,0.18) 29px,
-      rgba(180,160,120,0.18) 30px
-    )`,
   };
 
   return (
