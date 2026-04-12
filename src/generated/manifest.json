@@ -310,5 +310,40 @@
       "visual_style": "Aged cream/ivory background, ink-brown and faded sepia tones. Handwritten-style font via font-family serif with letter-spacing tweaks. Letters appear on slightly off-white paper cards with subtle drop shadow and faint ruled lines. Crossed-out text in red-brown. Postscripts in smaller, slantier style. Overall mood: melancholy domestic intimacy, like finding old letters in a drawer.",
       "key_implementation_notes": "Store all furniture letters as a predefined array of objects with name, opening, body segments (some marked as crossouts), and postscript arrays — no fetch needed. Render the typewriter text by splitting into spans, applying strikethrough style to ranges tracked in crossouts state. The 'worse follow-up' letters should reference specific details from the first letter using template strings that pull from the same furniture object's metadata fields. Silence UI is just a centered italic counter with the furniture's name displayed dimly, creating dread through emptiness."
     }
+  },
+  {
+    "date": "2026-04-12",
+    "title": "Vending Machine for Lost Futures",
+    "description": "The coil turns. Something drops. You already owned this. You always did.",
+    "idea": "A glowing vending machine UI occupies the screen, its glass display filled with spiraling coils holding small packaged futures — 'Architect You, Age 34,' 'The Version That Stayed,' 'Child You Would Have Named Morrow,' 'The Tuesday Where You Said Yes.' Each item has a price in a currency called NERVE, and the user starts with exactly enough for one purchase. Clicking a selection causes the coil to slowly rotate, the package to inch forward — then stop. A small paper receipt prints from the bottom: 'Item Unavailable: Purchased By Previous Self. See Claim Form K-9.' Every item, no matter which one, has already been bought. The machine apologizes in the flat affect of a broken appliance. But if the user waits long enough without clicking, the machine hums, flickers, and silently vends something unexpected into the tray — a small animated package labeled only 'THIS ONE' — which, when clicked, opens to reveal the current moment described back to them with absurd, specific tenderness.",
+    "plan": {
+      "title": "Vending Machine for Lost Futures",
+      "state_variables": [
+        "selectedItem: index of currently selected/animating item or null",
+        "receiptVisible: boolean showing receipt at bottom",
+        "receiptText: string content of the printed receipt",
+        "coilRotation: number tracking rotation degrees for selected coil animation",
+        "machineFlicker: boolean triggering flicker CSS animation state",
+        "unexpectedItem: boolean — whether the mystery package has appeared in tray",
+        "unexpectedItemOpen: boolean — whether THIS ONE package has been clicked/opened",
+        "idleTimer: ref-tracked seconds since last interaction",
+        "nerveBalance: number starting at cost of one item",
+        "purchaseAttempted: boolean locks out further purchases after first attempt"
+      ],
+      "effects": [
+        "useEffect on mount: start idle countdown interval, increment idleSeconds every second",
+        "useEffect watching idleSeconds: at threshold (~18s), trigger machineFlicker then set unexpectedItem true after flicker sequence",
+        "useEffect watching selectedItem: animate coilRotation from 0 to ~270deg over 2s using requestAnimationFrame, then stop and show receipt",
+        "useEffect watching machineFlicker: toggle flicker boolean off after 1.5s"
+      ],
+      "key_interactions": [
+        "Hover over vending item: highlight slot with glow, show item name and NERVE price prominently",
+        "Click vending item: deduct NERVE, animate coil rotation, show item inching forward then stopping, print receipt with 'Item Unavailable: Purchased By Previous Self. See Claim Form K-9.' and machine apology in flat appliance tone",
+        "Click THIS ONE package in tray: open it with expand animation, reveal current-moment description with absurd tender specificity (time-aware text built from Date object)",
+        "Any interaction resets idle timer back to 0"
+      ],
+      "visual_style": "Deep navy/black background with sickly warm fluorescent glow — amber and pale green. Machine body is dark gunmetal with scratched chrome trim. Items in coils are small pastel rectangles with tiny serif text. Receipt is white thermal paper strip. Overall mood: bureaucratic grief, vending machine existentialism, late-night convenience store melancholy.",
+      "key_implementation_notes": "The vending machine is a single tall centered div with a 'glass' panel (semi-transparent overlay with inner glow) containing a grid of coil+item slots rendered from a hardcoded items array. Coil animation uses a useRef for requestAnimationFrame, rotating an SVG spiral element. The receipt prints via a CSS height transition from 0 to auto on a white strip div at the machine bottom. The THIS ONE reveal generates its text dynamically using new Date() to inject real current hour, day, and season into a templated absurdist-tender description string."
+    }
   }
 ]
