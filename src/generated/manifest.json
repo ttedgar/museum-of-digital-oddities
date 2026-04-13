@@ -345,5 +345,41 @@
       "visual_style": "Deep navy/black background with sickly warm fluorescent glow — amber and pale green. Machine body is dark gunmetal with scratched chrome trim. Items in coils are small pastel rectangles with tiny serif text. Receipt is white thermal paper strip. Overall mood: bureaucratic grief, vending machine existentialism, late-night convenience store melancholy.",
       "key_implementation_notes": "The vending machine is a single tall centered div with a 'glass' panel (semi-transparent overlay with inner glow) containing a grid of coil+item slots rendered from a hardcoded items array. Coil animation uses a useRef for requestAnimationFrame, rotating an SVG spiral element. The receipt prints via a CSS height transition from 0 to auto on a white strip div at the machine bottom. The THIS ONE reveal generates its text dynamically using new Date() to inject real current hour, day, and season into a templated absurdist-tender description string."
     }
+  },
+  {
+    "date": "2026-04-13",
+    "title": "The Dog Show for Invisible Dogs",
+    "description": "Twelve leashes enter the ring. The judges weep without knowing why. Ribbon color: absence.",
+    "idea": "The user is a judge at an intensely official dog show — full scorecards, dramatic announcer narration, applause sounds — except every dog is invisible. Each competitor is represented only by a taut leash held by a nervous owner, a small placard with the dog's name and breed ('Cornish Vapor Hound,' 'Standard Theoretical Retriever'), and a judging form with categories like PRESENCE, CONVICTION OF BEING, and COAT (IMPLIED). The user must score each invisible dog by clicking star ratings, and the system responds with total sincerity — crowd reactions, judge commentary, disqualifications for 'excessive non-existence.' The winner receives a rosette that floats in midair, held by nothing, trembling slightly in an unfelt breeze.",
+    "plan": {
+      "title": "The Dog Show for Invisible Dogs",
+      "state_variables": [
+        "currentDogIndex: number — which of the 12 dogs is being judged",
+        "scores: object map of dogId -> {presence, conviction, coat, bearing, spectral_density} star ratings",
+        "phase: 'intro' | 'judging' | 'results' — show phase",
+        "announcerText: string — current dramatic narration line",
+        "crowdReaction: string — current crowd emotion descriptor",
+        "disqualified: Set of dogId strings",
+        "winner: dogId or null",
+        "rosetteTrembleAngle: number — for floating rosette animation",
+        "showScorecard: boolean — whether scorecard panel is open",
+        "completedDogs: Set of dogId strings"
+      ],
+      "effects": [
+        "useEffect on announcerText: auto-clear after 4 seconds back to idle narration",
+        "useEffect on currentDogIndex change: trigger entrance narration text with setTimeout cascade",
+        "useEffect interval: animate rosetteTrembleAngle with small sinusoidal oscillation when phase==='results'",
+        "useEffect on completedDogs size reaching 12: compute winner (highest total score, excluding disqualified), set phase to results, trigger final announcer sequence"
+      ],
+      "key_interactions": [
+        "Click star rating (1-5) for each of 5 categories on the judging scorecard — updates scores state immediately with crowd murmur text",
+        "Submit scorecard button: locks in scores for current dog, triggers announcer commentary based on total, advances to next dog",
+        "Disqualify button: adds dog to disqualified set with reason drawn from pool ('excessive non-existence', 'implausible coat', 'failed to not-bark convincingly')",
+        "Next Dog button: advances currentDogIndex with leash entrance animation",
+        "Click floating rosette in results: triggers brief trembling animation spike and a reverent announcer line"
+      ],
+      "visual_style": "Deep navy and ivory — official, bureaucratic, slightly absurd. Gold accents for ribbons and stars. Serif fonts for placards and scorecards. The ring is a pale cream oval on dark floor. Leash drawn as a taut curved SVG line from owner silhouette to empty air. Atmosphere: hushed, reverent, genuinely emotional.",
+      "key_implementation_notes": "Each dog is defined as a static data array with name, breed (absurdist), owner name, and a flavor quirk used in announcer lines. The leash is an SVG cubic bezier with slight sway via CSS transform on a wrapper div using a keyframe-equivalent inline animation driven by a useEffect interval updating a 'leashSway' number in state. Star rating component is inline — five span elements that highlight on hover using a hovered index local state. Announcer text renders character-by-character using a typewriter effect driven by a useEffect with setInterval that increments a displayed-length counter."
+    }
   }
 ]
