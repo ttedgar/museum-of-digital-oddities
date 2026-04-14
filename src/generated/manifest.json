@@ -381,5 +381,36 @@
       "visual_style": "Deep navy and ivory — official, bureaucratic, slightly absurd. Gold accents for ribbons and stars. Serif fonts for placards and scorecards. The ring is a pale cream oval on dark floor. Leash drawn as a taut curved SVG line from owner silhouette to empty air. Atmosphere: hushed, reverent, genuinely emotional.",
       "key_implementation_notes": "Each dog is defined as a static data array with name, breed (absurdist), owner name, and a flavor quirk used in announcer lines. The leash is an SVG cubic bezier with slight sway via CSS transform on a wrapper div using a keyframe-equivalent inline animation driven by a useEffect interval updating a 'leashSway' number in state. Star rating component is inline — five span elements that highlight on hover using a hovered index local state. Announcer text renders character-by-character using a typewriter effect driven by a useEffect with setInterval that increments a displayed-length counter."
     }
+  },
+  {
+    "date": "2026-04-14",
+    "title": "Clouds Testify Against You",
+    "description": "The sky has been subpoenaed. Each cumulus remembers exactly what you did at 3pm.",
+    "idea": "The screen is a courtroom sky — pale overcast blue, with slowly drifting cloud-shapes that are the witnesses. Each cloud, when clicked, morphs into a vaguely accusatory shape and a stenographer's transcript appears below, recording the cloud's testimony about something the user did that it witnessed from above: a specific parking lot, a Wednesday, a face you made when no one was looking. The clouds speak in the clipped, emotionless language of court transcripts ('CLOUD EXHIBIT 7: The defendant paused at a crosswalk for eleven seconds and then continued. The motivation remains unclear.'). As more clouds are called to testify, a 'CASE STRENGTH' meter fills — but it's never clear what the case is about, who filed it, or what the verdict could possibly be. When the meter fills, the gavel falls and the judgment is read: something absurdly specific, solemnly delivered, and completely unactionable.",
+    "plan": {
+      "title": "Clouds Testify Against You",
+      "state_variables": [
+        "clouds: array of cloud objects with id, x, y, speed, size, testified, exhibitNum, morphProgress",
+        "transcripts: array of testimony strings shown in stenographer panel",
+        "caseStrength: number 0-100 representing meter fill",
+        "verdictReached: boolean for when meter fills",
+        "verdictText: string for final judgment",
+        "gavelFalling: boolean for gavel animation state",
+        "exhibitCounter: number tracking total clouds called"
+      ],
+      "effects": [
+        "requestAnimationFrame loop to drift clouds horizontally, wrapping at screen edges, updating x positions",
+        "When verdictReached becomes true, trigger gavel animation then display verdict after short delay",
+        "On mount, initialize 6-8 clouds with randomized positions, speeds, and sizes"
+      ],
+      "key_interactions": [
+        "Click a cloud: trigger morph animation (morphProgress 0->1 over ~800ms), add testimony to transcript panel, increment caseStrength by 12-18, mark cloud as testified (changes opacity/shape)",
+        "Testified clouds still drift but are visually 'spent' — dimmer, slightly distorted shape",
+        "When caseStrength>=100: gavel SVG animates downward, verdict text fades in over courtroom sky",
+        "Transcript panel auto-scrolls to latest entry"
+      ],
+      "visual_style": "Pale overcast blue (#c8d8e8 to #dde8f0 gradient sky). Clouds are white/grey SVG blob shapes. Transcript panel is cream (#f5f0e8) with monospace courier font, thin black border. Case strength meter is a thin horizontal bar in dark navy. Gavel is simple SVG. Mood: bureaucratic dread, absurdist solemnity.",
+      "key_implementation_notes": "Clouds rendered as SVG with multiple overlapping ellipses; on testimony trigger, morph by animating ellipse rx/ry values toward a more angular/accusatory arrangement using interpolation in the rAF loop. Pre-write a pool of 20+ testimony strings referencing hyper-specific mundane moments (parking lots, Wednesdays, micro-expressions) and verdict strings. Each cloud's morphProgress drives a CSS-style transform via inline style on the SVG group. Transcript panel is a fixed-height scrollable div positioned at bottom of screen."
+    }
   }
 ]
