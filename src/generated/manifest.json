@@ -412,5 +412,34 @@
       "visual_style": "Pale overcast blue (#c8d8e8 to #dde8f0 gradient sky). Clouds are white/grey SVG blob shapes. Transcript panel is cream (#f5f0e8) with monospace courier font, thin black border. Case strength meter is a thin horizontal bar in dark navy. Gavel is simple SVG. Mood: bureaucratic dread, absurdist solemnity.",
       "key_implementation_notes": "Clouds rendered as SVG with multiple overlapping ellipses; on testimony trigger, morph by animating ellipse rx/ry values toward a more angular/accusatory arrangement using interpolation in the rAF loop. Pre-write a pool of 20+ testimony strings referencing hyper-specific mundane moments (parking lots, Wednesdays, micro-expressions) and verdict strings. Each cloud's morphProgress drives a CSS-style transform via inline style on the SVG group. Transcript panel is a fixed-height scrollable div positioned at bottom of screen."
     }
+  },
+  {
+    "date": "2026-04-15",
+    "title": "Horroscope: Your Future in Horses",
+    "description": "A horse made of appointments refuses to gallop. The stars are also horses. You were always a horse.",
+    "idea": "The user enters their birth date into an ornate, deeply serious astrological interface — but instead of zodiac signs, every celestial body in this system is a specific horse. The sun is a horse. Mercury is a nervous horse. The moon is a horse that has seen things. Based on the user's input, the site generates a full horoscope in the breathless, vague-yet-specific language of real astrology columns, except every prediction involves horses in ways that feel cosmically inevitable: 'A Palomino Rising suggests you will receive news near a threshold. Do not look the news in the mouth.' Each planet's horse-avatar slowly trots across the orrery at the top of the page, and clicking any horse-planet reveals its 'aspect' to your chart — a single devastating sentence about your personality that is somehow both obviously absurd and uncomfortably accurate. The final 'Lucky Horse' for the day is generated fresh each visit and described with the specificity of a missing poster.",
+    "plan": {
+      "title": "Horroscope: Your Future in Horses",
+      "state_variables": [
+        "birthDate: string — user's entered birth date (YYYY-MM-DD)",
+        "submitted: boolean — whether horoscope has been generated",
+        "selectedPlanet: string|null — which horse-planet was clicked for aspect reveal",
+        "luckyHorse: object — generated lucky horse description with name, markings, temperament, last seen",
+        "orbitAngle: number — current animation tick for orrery rotation (0-360)",
+        "aspectVisible: boolean — controls aspect sentence overlay visibility"
+      ],
+      "effects": [
+        "useEffect on mount: start requestAnimationFrame loop incrementing orbitAngle continuously for orrery animation, cleanup on unmount",
+        "useEffect on submitted: derive all horoscope content deterministically from birthDate string (hash-based seed) — planet horse assignments, rising sign horse, full reading paragraphs, lucky horse object"
+      ],
+      "key_interactions": [
+        "Birth date input with ornate label, submit button triggers horoscope generation",
+        "Clicking any trotting horse-planet in orrery reveals its 'aspect' as a modal/tooltip with a single devastating personality sentence",
+        "Dismissing aspect overlay by clicking outside or pressing escape",
+        "Scrolling through the generated horoscope reading sections (one per horse-planet)"
+      ],
+      "visual_style": "Deep midnight navy and burgundy background, gold and parchment text, serif fonts via inline fontFamily Georgia/serif. Orrery rendered in SVG — concentric elliptical orbits in dim gold, horse-planets as small emoji or unicode horse glyphs (🐴) with glow. Overall aesthetic: antique celestial map meets tabloid astrology column. Dense, reverent, slightly unhinged.",
+      "key_implementation_notes": "All content generation is purely deterministic from a simple hash of the birthDate string — no randomness at runtime except luckyHorse which uses Date.now() seed on each visit. The orrery is an SVG with each planet positioned using sin/cos of (orbitAngle * speedMultiplier + phaseOffset) per planet, giving independent trotting speeds. Planet horse names, aspect sentences, and horoscope paragraphs are stored as static lookup arrays indexed by hash mod length — no fetch needed. The lucky horse description is assembled from parallel adjective/marking/breed/location arrays to produce missing-poster specificity."
+    }
   }
 ]
