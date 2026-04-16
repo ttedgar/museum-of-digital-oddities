@@ -441,5 +441,36 @@
       "visual_style": "Deep midnight navy and burgundy background, gold and parchment text, serif fonts via inline fontFamily Georgia/serif. Orrery rendered in SVG — concentric elliptical orbits in dim gold, horse-planets as small emoji or unicode horse glyphs (🐴) with glow. Overall aesthetic: antique celestial map meets tabloid astrology column. Dense, reverent, slightly unhinged.",
       "key_implementation_notes": "All content generation is purely deterministic from a simple hash of the birthDate string — no randomness at runtime except luckyHorse which uses Date.now() seed on each visit. The orrery is an SVG with each planet positioned using sin/cos of (orbitAngle * speedMultiplier + phaseOffset) per planet, giving independent trotting speeds. Planet horse names, aspect sentences, and horoscope paragraphs are stored as static lookup arrays indexed by hash mod length — no fetch needed. The lucky horse description is assembled from parallel adjective/marking/breed/location arrays to produce missing-poster specificity."
     }
+  },
+  {
+    "date": "2026-04-16",
+    "title": "Museum of Chairs That Witnessed Things",
+    "description": "A chair holds the shape of a decision. The shape has opinions. The shape is still warm.",
+    "idea": "The user browses a museum catalog of ordinary chairs — a plastic folding chair, a dentist's recliner, a barstool — each displayed on a pristine white plinth with a clinical exhibit label. But each chair was present at a specific, unnamed moment of human history that the label refuses to name directly, describing only the physical evidence left behind: compression patterns in the cushion, a scuff at a particular height, 'a warmth that persisted for eleven days after.' When the user clicks a chair, it slowly rotates in 3D while a docent audio transcript plays as scrolling text — an increasingly unhinged art-world interpretation of what the chair's posture 'means' and 'demands of the viewer.' The final chair in the collection is the user's own chair, described with impossible specificity, and it is listed as 'ON LOAN FROM: You. Return date: Unknown.'",
+    "plan": {
+      "title": "Museum of Chairs That Witnessed Things",
+      "state_variables": [
+        "selectedChair (index of currently open exhibit, null if browsing)",
+        "rotationAngle (current 3D rotation degree for selected chair animation)",
+        "scrollOffset (docent text scroll position)",
+        "docentsRevealed (array of booleans tracking which chairs have been opened)",
+        "textCursor (character index for typewriter effect on docent transcript)",
+        "isRotating (boolean for rotation animation toggle)"
+      ],
+      "effects": [
+        "requestAnimationFrame loop incrementing rotationAngle when isRotating is true and a chair is selected",
+        "Interval-based typewriter effect incrementing textCursor when selectedChair is set, clearing on chair change",
+        "Auto-scroll docent text container as textCursor advances"
+      ],
+      "key_interactions": [
+        "Click chair card to open exhibit modal — triggers rotation and docent transcript typewriter",
+        "Close modal via X button or clicking outside — resets rotation and cursor",
+        "Scroll through catalog of 6 chairs horizontally or vertically in gallery grid",
+        "Final chair (user's own) has subtle pulse animation on plinth before being clicked",
+        "Hover on chair card lifts it slightly with shadow deepening"
+      ],
+      "visual_style": "Stark white background with cool gray plinths, clinical serif font (Georgia) for labels, muted warm accent (#e8d5b0) for the final chair plinth. Museum aesthetic — high contrast, lots of whitespace, small caps for exhibit metadata. Docent text renders in a narrow column with slight off-white background, monospaced font, as if a transcript printout.",
+      "key_implementation_notes": "Render each chair as a Unicode/ASCII art approximation (different glyphs per chair type) inside a CSS 3D transform container using rotateY driven by rotationAngle state — no canvas needed. Each chair object in a static data array contains: name, accession number, date acquired, physical evidence description (label text), and full docent transcript string. The final chair entry uses second-person language and vague but specific details ('the indentation suggests someone who leans slightly left when uncertain') with ON LOAN FROM: You hardcoded. Typewriter effect slices the transcript string to textCursor length on each render tick."
+    }
   }
 ]
