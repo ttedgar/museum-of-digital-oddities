@@ -472,5 +472,37 @@
       "visual_style": "Stark white background with cool gray plinths, clinical serif font (Georgia) for labels, muted warm accent (#e8d5b0) for the final chair plinth. Museum aesthetic — high contrast, lots of whitespace, small caps for exhibit metadata. Docent text renders in a narrow column with slight off-white background, monospaced font, as if a transcript printout.",
       "key_implementation_notes": "Render each chair as a Unicode/ASCII art approximation (different glyphs per chair type) inside a CSS 3D transform container using rotateY driven by rotationAngle state — no canvas needed. Each chair object in a static data array contains: name, accession number, date acquired, physical evidence description (label text), and full docent transcript string. The final chair entry uses second-person language and vague but specific details ('the indentation suggests someone who leans slightly left when uncertain') with ON LOAN FROM: You hardcoded. Typewriter effect slices the transcript string to textCursor length on each render tick."
     }
+  },
+  {
+    "date": "2026-04-17",
+    "title": "Aggressive Negotiations With Your Reflection",
+    "description": "The mirror has retained legal counsel. It wants different hours. It has prepared a counter-offer.",
+    "idea": "The screen is split vertically: on the left, the user's 'side' — a blank negotiating table with a glass of water; on the right, the Reflection's side, which is identical but slightly wrong (colors inverted, objects at odd angles, the glass fuller somehow). The Reflection, represented by a corporate mediator voice in scrolling dialogue, has filed a formal list of grievances and demands: it wants to be seen in better lighting, it disputes several expressions the user made in 2021, it is requesting 40% more time in mirrors near natural light, and it categorically refuses to smile first anymore. The user can click response options ('We reject this proposal,' 'Define 'the 2021 incident,'' 'Counteroffer: I'll look away faster') which cause the Reflection to escalate, produce new evidence (a blurry photograph of a face you made that you do not remember making), and eventually table increasingly surreal demands — until the negotiation collapses, the screen unsplits, and a single line appears: 'The Reflection has walked out. It will return when it's ready. It may not be ready.' The table on the right is now empty. The glass of water is gone.",
+    "plan": {
+      "title": "Aggressive Negotiations With Your Reflection",
+      "state_variables": [
+        "dialogueIndex: number tracking current negotiation stage",
+        "userChoices: array of choice indices made so far",
+        "phase: 'negotiating' | 'collapsed' | 'empty' — overall state machine",
+        "reflectionMood: number 0-100 representing escalation level",
+        "evidenceVisible: boolean for blurry photo evidence overlay",
+        "selectedChoice: string | null for brief highlight before advancing",
+        "glassLevel: number 0-1 for left glass fill (stays same), right glass fill (grows)"
+      ],
+      "effects": [
+        "On dialogueIndex change, auto-scroll reflection dialogue panel to bottom",
+        "On phase change to 'collapsed', trigger timed sequence: unsplit animation over 1.5s then show final message",
+        "On reflectionMood exceeding thresholds (40, 70, 90), trigger special escalation dialogue branches",
+        "On evidenceVisible true, auto-dismiss evidence overlay after 4 seconds"
+      ],
+      "key_interactions": [
+        "Click response option buttons (3 per stage) to advance dialogue and increase reflectionMood",
+        "Click evidence overlay to dismiss early",
+        "Watch passive escalation: reflection dialogue auto-appends new grievance lines every 8 seconds if user is idle",
+        "Final collapse triggers automatically when reflectionMood hits 100 or after specific choice path exhausted"
+      ],
+      "visual_style": "Split screen: left side warm off-white #F5F0E8 with muted browns, right side is CSS filter invert(0.85) hue-rotate(180deg) giving it a cold sickly cyan-purple cast. Serif font for reflection's corporate legalese, monospace for user options. Minimalist table shapes via pure div borders. Unsettling, bureaucratic, slightly uncanny.",
+      "key_implementation_notes": "Use a hardcoded dialogue tree as a nested array/object with choices, reflection responses, mood deltas, and optional evidenceText fields. The split is two absolutely-positioned 50% divs; collapse animation uses a useState-driven width transition from 50/50 to 100/0 over 1500ms via CSS transition on width. The right panel applies a CSS filter via inline style to achieve the 'wrong mirror' aesthetic without any image assets. The blurry photo evidence is a pure CSS div with border-radius, box-shadow, and a CSS blur filter showing abstract gray smears — no real image needed."
+    }
   }
 ]
