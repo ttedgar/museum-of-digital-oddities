@@ -504,5 +504,32 @@
       "visual_style": "Split screen: left side warm off-white #F5F0E8 with muted browns, right side is CSS filter invert(0.85) hue-rotate(180deg) giving it a cold sickly cyan-purple cast. Serif font for reflection's corporate legalese, monospace for user options. Minimalist table shapes via pure div borders. Unsettling, bureaucratic, slightly uncanny.",
       "key_implementation_notes": "Use a hardcoded dialogue tree as a nested array/object with choices, reflection responses, mood deltas, and optional evidenceText fields. The split is two absolutely-positioned 50% divs; collapse animation uses a useState-driven width transition from 50/50 to 100/0 over 1500ms via CSS transition on width. The right panel applies a CSS filter via inline style to achieve the 'wrong mirror' aesthetic without any image assets. The blurry photo evidence is a pure CSS div with border-radius, box-shadow, and a CSS blur filter showing abstract gray smears — no real image needed."
     }
+  },
+  {
+    "date": "2026-04-18",
+    "title": "Census of Things You Almost Said",
+    "description": "Each word waited in the throat like a small warm animal. The government counted them anyway.",
+    "idea": "The user is presented with an official Population Census interface for the nation of 'The Unsaid' — a country that exists entirely inside the pause before speaking. The census lists inhabitants: half-formed apologies, the compliment that died at the lips, the correction swallowed during a meeting, the 'I love you' that became 'drive safe.' Each entry has demographic data — age (how long it has been held), occupation ('ambient pressure,' 'low-grade hum'), and citizenship status ('naturalized' for the ones that have lived there so long they've built homes). The user can click 'DEPORT' on any entry, which causes a slow, bureaucratic animation of the unsaid word being expelled — floating toward a mouth-shaped border crossing, then bouncing back with a stamp: 'REPATRIATED. Entry denied. Mouth was occupied.' New inhabitants keep arriving silently at the bottom of the list while the user works. The counter at the top reads: 'Current Population: [a number that keeps growing]. Projected population by end of page visit: More.'",
+    "plan": {
+      "title": "Census of Things You Almost Said",
+      "state_variables": [
+        "inhabitants: array of census entries with id, name, age, occupation, citizenship, arrivalTime, deportStatus ('idle'|'deporting'|'denied')",
+        "population: number that increments over time",
+        "tickCount: number used to trigger new arrivals",
+        "deniedLog: array of recently stamped/denied entries for overlay display"
+      ],
+      "effects": [
+        "setInterval every 8-14s (randomized): push a new inhabitant to inhabitants list, increment population",
+        "setInterval every 1s: increment population by 1 to simulate background growth",
+        "On deportStatus='deporting': after 2.5s animation delay, set status to 'denied', add to deniedLog, then after 2s more reset to 'idle'"
+      ],
+      "key_interactions": [
+        "Click DEPORT button on any idle entry: triggers deport animation sequence — entry floats rightward toward a mouth-shaped SVG border, then snaps back with red REPATRIATED stamp overlay",
+        "Stamp overlay fades out after 2s, entry returns to idle with slightly older age",
+        "Scroll to bottom auto-reveals new arrivals appearing silently (no fanfare, just fade-in)"
+      ],
+      "visual_style": "Muted institutional beige and grey — like a 1970s government form. Monospace fonts throughout. Deep olive green accents for stamps and official seals. Red ink for REPATRIATED denial stamp. Faint horizontal rule separators. Cold, bureaucratic, slightly absurd. The mouth-border SVG is a minimal lip outline in the right margin.",
+      "key_implementation_notes": "Each inhabitant object is generated from a pool of ~20 pre-written poetic entries (name, occupation, citizenship tier) with randomized 'age held' values in years/months. The deport animation uses CSS keyframe-equivalent inline style transitions: transform translateX to 120% over 2s, then snap back with a red stamp div absolutely positioned over the row using opacity transition. Population counter uses two intervals — a slow poetic one for arrivals and a fast one for ambient growth — both cleaned up on unmount. The mouth SVG border crossing sits fixed on the right edge of the viewport as a subtle persistent element."
+    }
   }
 ]
