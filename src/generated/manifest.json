@@ -531,5 +531,43 @@
       "visual_style": "Muted institutional beige and grey — like a 1970s government form. Monospace fonts throughout. Deep olive green accents for stamps and official seals. Red ink for REPATRIATED denial stamp. Faint horizontal rule separators. Cold, bureaucratic, slightly absurd. The mouth-border SVG is a minimal lip outline in the right margin.",
       "key_implementation_notes": "Each inhabitant object is generated from a pool of ~20 pre-written poetic entries (name, occupation, citizenship tier) with randomized 'age held' values in years/months. The deport animation uses CSS keyframe-equivalent inline style transitions: transform translateX to 120% over 2s, then snap back with a red stamp div absolutely positioned over the row using opacity transition. Population counter uses two intervals — a slow poetic one for arrivals and a fast one for ambient growth — both cleaned up on unmount. The mouth SVG border crossing sits fixed on the right edge of the viewport as a subtle persistent element."
     }
+  },
+  {
+    "date": "2026-04-19",
+    "title": "Elevator to an Unscheduled Floor",
+    "description": "The doors open on something that has been waiting for you specifically, since before the building existed.",
+    "idea": "The user stands inside a photorealistic CSS elevator — wood paneling, brass buttons, a flickering floor indicator — and presses buttons for floors that don't exist in any real building: Floor 'W,' Floor 0.5, Floor BEFORE, Floor THE ONE YOU MEANT. Each floor's doors open to reveal a brief, impossible lobby: a waiting room where everyone is you at a different age but they won't look up, a hallway that is only Tuesday afternoons, a reception desk staffed by the concept of 'almost.' The elevator's emergency phone, when clicked, connects to a recorded message from someone who sounds like they know you but can't quite place from where. The floor indicator never shows the same number twice, and the 'DOOR CLOSE' button works — but the doors close on something different than what was there when they opened.",
+    "plan": {
+      "title": "Elevator to an Unscheduled Floor",
+      "state_variables": [
+        "currentFloor: string — the label shown on the floor indicator (never repeats)",
+        "doorsOpen: boolean — whether doors are currently open",
+        "selectedButton: string|null — which floor button was pressed",
+        "lobbyScene: object|null — current impossible lobby description and visual config",
+        "doorClosingScene: object|null — the different thing seen when doors close",
+        "phoneActive: boolean — whether emergency phone message is playing",
+        "phoneMessageIndex: number — which recorded message line is showing",
+        "indicatorHistory: string[] — all floor labels shown so far (to prevent repeats)",
+        "flickerState: boolean — for floor indicator flicker animation",
+        "buttonPressed: string|null — tracks button press animation state",
+        "doorsTransition: string — 'opening'|'closing'|'idle'",
+        "closingReveal: boolean — show the different thing as doors close"
+      ],
+      "effects": [
+        "Flicker interval on floor indicator: random 80-400ms toggles of opacity/brightness while doors are moving",
+        "Auto-advance phone message lines every 3 seconds when phoneActive is true",
+        "When doorsOpen transitions to true, set lobbyScene based on selectedButton after 1.2s door animation delay",
+        "When doorsTransition becomes 'closing', after 600ms set closingReveal=true with doorClosingScene different from lobbyScene, then complete close after another 800ms"
+      ],
+      "key_interactions": [
+        "Click floor buttons (W, 0.5, BEFORE, THE ONE YOU MEANT, ∅, SOON, 13A, ALMOST) — triggers door open sequence to that floor's impossible lobby",
+        "Click DOOR OPEN button — re-opens doors if closed, shows same lobby but subtly altered description",
+        "Click DOOR CLOSE button — begins closing sequence, reveals doorClosingScene (different thing) mid-close",
+        "Click emergency phone handset — toggles phoneActive, cycles through cryptic recorded message lines that imply familiarity",
+        "Hover over lobby scene text — reveals a secondary layer of impossible detail as tooltip-style overlay"
+      ],
+      "visual_style": "Deep mahogany wood grain via CSS repeating-linear-gradient, warm amber brass tones (#B8860B, #DAA520), dim incandescent lighting (#FFF5C0 glow), dark shadow vignette, art deco elevator aesthetic. Lobby scenes render as stark white text on near-black with a single colored atmospheric wash per floor. Unsettling, liminal, intimate.",
+      "key_implementation_notes": "Door animation uses two absolutely-positioned panels (left/right halves) that translate outward/inward via CSS transform in JS-driven inline style transitions — no keyframes needed. Each floor button maps to a lobbyScene object with title, description, atmosphereColor, and a separate doorClosingScene object generated at close-time from a different pool. The floor indicator uses a useMemo-generated unique label from a predefined set minus indicatorHistory, updated on each button press. Phone messages are stored as a static array of ~8 lines and cycled with phoneMessageIndex % array.length, rendered in a retro LCD monospace style overlaid on the panel."
+    }
   }
 ]
