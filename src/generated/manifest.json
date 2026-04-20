@@ -569,5 +569,39 @@
       "visual_style": "Deep mahogany wood grain via CSS repeating-linear-gradient, warm amber brass tones (#B8860B, #DAA520), dim incandescent lighting (#FFF5C0 glow), dark shadow vignette, art deco elevator aesthetic. Lobby scenes render as stark white text on near-black with a single colored atmospheric wash per floor. Unsettling, liminal, intimate.",
       "key_implementation_notes": "Door animation uses two absolutely-positioned panels (left/right halves) that translate outward/inward via CSS transform in JS-driven inline style transitions — no keyframes needed. Each floor button maps to a lobbyScene object with title, description, atmosphereColor, and a separate doorClosingScene object generated at close-time from a different pool. The floor indicator uses a useMemo-generated unique label from a predefined set minus indicatorHistory, updated on each button press. Phone messages are stored as a static array of ~8 lines and cycled with phoneMessageIndex % array.length, rendered in a retro LCD monospace style overlaid on the panel."
     }
+  },
+  {
+    "date": "2026-04-20",
+    "title": "Audition for the Role of Yourself",
+    "description": "The casting director has no notes. The casting director is also you. The chair is already warm.",
+    "idea": "The user arrives at a professional casting call — clipboard, fluorescent waiting room, numbered ticket — auditioning for the role of themselves in an unnamed production. They are given sides to read: stage directions describing things they actually do, written in the clinical third-person of a character breakdown ('Subject pauses before answering. Subject laughs slightly too late. Subject checks phone for a reason that changes each time.'). The user must click through response options to 'perform' each direction, but the casting director — a disembodied voice rendered as scrolling notes — keeps asking for another take, each time requesting a subtly different version: 'Try it again but as if you meant it,' 'Once more but less you,' 'Can we see the one who doesn't do that thing with their hands?' After seven takes, the casting director goes quiet. A callback notice appears. The role has been given to 'a strong candidate with more availability.' The candidate's headshot is the user's own browser tab icon, staring back.",
+    "plan": {
+      "title": "Audition for the Role of Yourself",
+      "state_variables": [
+        "phase: 'waiting' | 'reading' | 'take' | 'callback' — overall stage of the experience",
+        "ticketNumber: random 3-digit number generated on mount",
+        "currentDirection: index into the array of stage directions (0-6)",
+        "takeNumber: current take count (1-7) for current direction",
+        "directorNote: string — current scrolling note from casting director",
+        "selectedResponse: index of chosen response option or null",
+        "noteScrolling: boolean — whether director note is mid-scroll animation",
+        "callbackVisible: boolean — final callback notice shown",
+        "chairWarm: boolean — subtle flavor text toggle on entry"
+      ],
+      "effects": [
+        "On mount: generate ticket number, set chairWarm true after 800ms delay to trigger entry flavor text",
+        "When directorNote changes: trigger character-by-character typewriter scroll effect using setInterval, clearing on cleanup",
+        "When takeNumber reaches 7 on final direction: trigger 'going quiet' pause (2s setTimeout) then reveal callback notice",
+        "On callbackVisible: use document.title to set tab title to a candidate name, and set favicon via link tag injection to a simple emoji/unicode face — the 'headshot'"
+      ],
+      "key_interactions": [
+        "Click 'Take a number' ticket to transition from waiting to reading phase",
+        "Click through 3 response options per stage direction — each option is a different 'performance' of the same action (e.g. 'Do it earnestly', 'Do it ironically', 'Do it without thinking')",
+        "After selecting response, director note typewriters in with a new-take request; user clicks 'Again' to increment take or advance direction",
+        "On final callback screen: a single button 'Check your phone' that does nothing — or loops back to waiting room"
+      ],
+      "visual_style": "Fluorescent institutional — off-white background (#F5F4EE), cool gray text, single accent of sickly yellow (#D4C84A) for ticket/highlights. Monospace font throughout. Sparse layout: centered column, lots of vertical whitespace. Clinical, slightly uncanny. Director notes appear in a distinct inset box with a blinking cursor.",
+      "key_implementation_notes": "Stage directions and take-request notes are hardcoded arrays — 7 directions each with 3 response options, 7 escalating director notes per direction that grow subtly more destabilizing ('less you', 'the other one', 'never mind the hands'). The typewriter effect uses a ref to store the interval ID and a state string that grows character by character. Favicon injection on callback uses createElement('link') with rel='icon' and a data URI of a simple SVG face or unicode character rendered to canvas — this is the conceptual payoff and must work without external assets. Tab title change via document.title is the final beat."
+    }
   }
 ]
