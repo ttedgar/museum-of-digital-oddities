@@ -603,5 +603,46 @@
       "visual_style": "Fluorescent institutional — off-white background (#F5F4EE), cool gray text, single accent of sickly yellow (#D4C84A) for ticket/highlights. Monospace font throughout. Sparse layout: centered column, lots of vertical whitespace. Clinical, slightly uncanny. Director notes appear in a distinct inset box with a blinking cursor.",
       "key_implementation_notes": "Stage directions and take-request notes are hardcoded arrays — 7 directions each with 3 response options, 7 escalating director notes per direction that grow subtly more destabilizing ('less you', 'the other one', 'never mind the hands'). The typewriter effect uses a ref to store the interval ID and a state string that grows character by character. Favicon injection on callback uses createElement('link') with rel='icon' and a data URI of a simple SVG face or unicode character rendered to canvas — this is the conceptual payoff and must work without external assets. Tab title change via document.title is the final beat."
     }
+  },
+  {
+    "date": "2026-04-21",
+    "title": "Applause for the Wrong Thing",
+    "description": "The audience knows something you don't. They have always known. The clapping is structural.",
+    "idea": "The user is seated in a darkened theater — velvet seats, brass sconces, a stage — but the performance is whatever the user does with their mouse. Every hesitation earns a standing ovation. Every click is met with polite, confused silence. Moving the cursor slowly produces reverent gasps; moving it quickly triggers scandalized murmuring and a formal usher intervention. The audience, rendered as rows of silhouetted heads, physically reacts — leaning in, covering mouths, dabbing eyes — but always to the wrong thing, always one beat off, with the complete emotional sincerity of people witnessing something that will change them forever. A marquee above the stage updates in real time with a title for what the audience believes they are watching: 'A Man Considers the Cursor,' 'The Diagonal: A Meditation,' 'She Moved It Left Again (Reprise).' After several minutes, the lights go down, the audience rises for a final ovation that will not stop, and a printed program slides onto the screen listing the user as both performer and 'the thing the performance was about all along.'",
+    "plan": {
+      "title": "Applause for the Wrong Thing",
+      "state_variables": [
+        "mousePos: {x,y} current cursor position",
+        "prevMousePos: {x,y} previous cursor position for delta",
+        "velocity: number computed mouse speed",
+        "isStill: boolean whether mouse has been idle >1.5s",
+        "stillDuration: number ms mouse has been still",
+        "audienceState: string enum — 'silence'|'gasp'|'ovation'|'murmur'|'usher'|'final'",
+        "marqueeTitle: string current performance title shown above stage",
+        "audienceHeads: array of {id,row,col,lean,mouth,dab} silhouette configs",
+        "showProgram: boolean final printed program overlay",
+        "elapsed: number seconds since mount",
+        "usherVisible: boolean usher intervention active",
+        "lastReactionTime: number timestamp of last audience state change"
+      ],
+      "effects": [
+        "Track mousemove on window: compute velocity, update mousePos, prevMousePos, trigger audience state logic",
+        "On velocity change: debounce to classify — stillness triggers ovation, slow movement triggers gasps, fast movement triggers murmur+usher",
+        "On isStill: start stillDuration timer via interval, escalate ovation intensity after 2s",
+        "Marquee title updater: every 8-15s pick new absurdist title keyed to recent behavior",
+        "Elapsed timer: every second increment elapsed; at 180s trigger final lights-down sequence and showProgram",
+        "audienceHeads init: useMemo to generate 40-50 silhouette configs in 5 rows with randomized x offsets",
+        "On audienceState change: randomize which heads lean/dab/cover-mouth based on state"
+      ],
+      "key_interactions": [
+        "Mouse stillness (>1.5s): standing ovation — heads rise, arms appear, applause text pulses",
+        "Slow mouse movement (<2px/frame): reverent gasps — heads lean forward, mouths open",
+        "Fast mouse movement (>15px/frame): scandalized murmur — heads turn to each other, usher silhouette walks across aisle",
+        "Click anywhere: polite confused silence — all heads straighten, brief pause, then resume prior state",
+        "After 3 minutes: lights fade to near-black, all heads stand, infinite ovation loop, program slides up from bottom"
+      ],
+      "visual_style": "Deep crimson and near-black — #0a0005 background, #3d0014 velvet, brass #b8860b sconce glow, warm amber stage light. Art deco theater aesthetic. Silhouettes in flat dark gray. Text in cream serif. Moody, hushed, slightly absurd grandeur.",
+      "key_implementation_notes": "Render audience as SVG rows of ellipse-head silhouettes with inline transform for lean/rise animations driven by state — no canvas needed. Velocity computed as euclidean distance between current and previous mousemove events, smoothed with exponential moving average to prevent jitter. Marquee titles stored as a lookup table keyed loosely to behavior categories (still, slow, fast, click) with a cycling index per category. The final program overlay is absolutely positioned, styled as a cream card with serif font listing user as performer, sliding in via a CSS transform transition on a style prop toggled by showProgram state."
+    }
   }
 ]
