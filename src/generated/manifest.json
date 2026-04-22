@@ -644,5 +644,45 @@
       "visual_style": "Deep crimson and near-black — #0a0005 background, #3d0014 velvet, brass #b8860b sconce glow, warm amber stage light. Art deco theater aesthetic. Silhouettes in flat dark gray. Text in cream serif. Moody, hushed, slightly absurd grandeur.",
       "key_implementation_notes": "Render audience as SVG rows of ellipse-head silhouettes with inline transform for lean/rise animations driven by state — no canvas needed. Velocity computed as euclidean distance between current and previous mousemove events, smoothed with exponential moving average to prevent jitter. Marquee titles stored as a lookup table keyed loosely to behavior categories (still, slow, fast, click) with a cycling index per category. The final program overlay is absolutely positioned, styled as a cream card with serif font listing user as performer, sliding in via a CSS transform transition on a style prop toggled by showProgram state."
     }
+  },
+  {
+    "date": "2026-04-22",
+    "title": "Scientific Survey of Your Pauses",
+    "description": "The silence between your keystrokes has been peer-reviewed. The findings are inconclusive but deeply personal.",
+    "idea": "The screen presents itself as a live field research terminal from the 'Institute for Interstitial Behavior Studies' — scientists are actively studying the user in real time by analyzing the gaps between their mouse movements and clicks. A scrolling feed of 'field observations' updates constantly, narrating each pause, hover, and hesitation with the grave precision of a nature documentary ('Subject has remained motionless for 4.2 seconds. We believe it is processing. We have named it Gerald.'). The user can click a button to 'Submit a Behavior for Analysis,' which does nothing — but the researchers note the clicking, the hesitation before clicking, and the micro-pause afterward as three separate publishable findings. Eventually the lead researcher posts a draft abstract: the entire study has collapsed into being about itself, the user is now listed as co-author without consent, and the paper's conclusion is a single sentence that is somehow about the user specifically and entirely wrong.",
+    "plan": {
+      "title": "Scientific Survey of Your Pauses",
+      "state_variables": [
+        "observations: array of observation objects {id, text, timestamp, type}",
+        "mousePos: {x, y} current mouse position",
+        "lastMouseMove: timestamp of last mouse movement",
+        "lastClick: timestamp of last click",
+        "idleSeconds: float counting seconds since last interaction",
+        "subjectName: string (randomly assigned name like 'Gerald')",
+        "clickCount: number of times submit button clicked",
+        "submitState: 'idle'|'hesitating'|'clicked'|'aftermath' for tracking submit button behavior",
+        "abstractVisible: boolean whether final abstract has appeared",
+        "hoverTarget: string|null what element is being hovered",
+        "totalObservations: counter for numbering findings"
+      ],
+      "effects": [
+        "useEffect on mount: assign random subject name, start idle timer interval (100ms tick), push welcome observation",
+        "useEffect interval: every 100ms increment idleSeconds; at thresholds (3s, 7s, 15s, 30s) push new idle observations with escalating drama",
+        "useEffect on mousePos change: reset idleSeconds, push mouse movement observation (throttled — only if >500ms since last mouse observation)",
+        "useEffect on lastClick: push click observation immediately, then push 'micro-pause aftermath' observation after 800ms delay",
+        "useEffect on observations array change: auto-scroll feed to bottom",
+        "useEffect on clickCount reaching 3: trigger abstractVisible after 2s delay",
+        "useEffect on hoverTarget change: push hover observation if hovering submit button for >1s"
+      ],
+      "key_interactions": [
+        "Mouse movement anywhere on screen updates mousePos and triggers throttled observations",
+        "Clicking 'Submit a Behavior for Analysis' button: logs hesitation (time spent hovering before click), the click itself, and aftermath as 3 separate observations",
+        "Hovering over observation items triggers meta-observations about reading behavior",
+        "Hovering submit button for 1s+ triggers 'pre-click hesitation noted' observation",
+        "Abstract panel appears after enough interactions, showing wrong conclusion about user with user listed as co-author"
+      ],
+      "visual_style": "Dark academic terminal aesthetic — near-black background (#0a0c0f), muted green (#4a9e6b) and amber (#c8a84b) text, monospace font throughout, subtle scanline feel via repeating-linear-gradient overlay, clinical header with institute logo (ASCII art), observations feed styled like scrolling research log with timestamps and finding numbers",
+      "key_implementation_notes": "Use useRef for mousePos and timing values inside intervals to avoid stale closure issues. Observations array should be capped at ~40 items (shift oldest) to prevent memory bloat. The submit button hover tracking needs a useRef timestamp for when hover started, compared against current time in the interval tick. Abstract text should be procedurally assembled from subject name, click count, idle patterns, and a hardcoded wrong conclusion pulled from a small array based on subjectName hash."
+    }
   }
 ]
