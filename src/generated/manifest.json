@@ -684,5 +684,38 @@
       "visual_style": "Dark academic terminal aesthetic — near-black background (#0a0c0f), muted green (#4a9e6b) and amber (#c8a84b) text, monospace font throughout, subtle scanline feel via repeating-linear-gradient overlay, clinical header with institute logo (ASCII art), observations feed styled like scrolling research log with timestamps and finding numbers",
       "key_implementation_notes": "Use useRef for mousePos and timing values inside intervals to avoid stale closure issues. Observations array should be capped at ~40 items (shift oldest) to prevent memory bloat. The submit button hover tracking needs a useRef timestamp for when hover started, compared against current time in the interval tick. Abstract text should be procedurally assembled from subject name, click count, idle patterns, and a hardcoded wrong conclusion pulled from a small array based on subjectName hash."
     }
+  },
+  {
+    "date": "2026-04-23",
+    "title": "Farewell Party for a Color",
+    "description": "The pigment has given notice. There are tiny sandwiches. No one knows what to say to a hue.",
+    "idea": "The user arrives at a going-away party for a specific color — a slightly wrong shade of amber-green that is retiring from existence. The room is decorated entirely in that color: streamers, balloons, a sheet cake with 'WE'LL MISS YOU #8BAF3C (SORT OF)' written in frosting. Other colors are rendered as awkward partygoers — small labeled name-tags, speech bubbles of stilted small talk ('You were always very... present,' says Taupe). The user can click on guests to overhear conversations, sign a farewell card that fills with increasingly unhinged messages from colors who barely knew the retiree, or approach the color itself — seated alone in the corner, slightly luminous — which responds in the quiet, resigned tones of someone who has made peace with no longer being perceived. As the party winds down, the retiring color slowly drains from every element on the page, leaving everything in its absence: a room-shaped hole in the spectrum, folding chairs, and a to-go bag of mints no one took.",
+    "plan": {
+      "title": "Farewell Party for a Color",
+      "state_variables": [
+        "partyPhase: 'arriving'|'party'|'winding'|'gone' — controls overall timeline",
+        "drainProgress: 0-1 float — how much #8BAF3C has been drained from the scene",
+        "selectedGuest: string|null — which color guest is currently speaking",
+        "cardMessages: string[] — accumulated farewell card messages",
+        "cardOpen: boolean — whether the farewell card UI is visible",
+        "honoreeSpoken: boolean — whether user has approached the retiring color",
+        "honoreeDialogIndex: number — which resigned monologue line is showing",
+        "confettiPieces: {x,y,rot,drift}[] — decorative confetti positions"
+      ],
+      "effects": [
+        "On mount: generate confetti positions array, set partyPhase to 'party' after 1.5s delay",
+        "Watch partyPhase: when 'winding', start drainProgress interval incrementing every 80ms until 1.0, then set phase to 'gone'",
+        "Watch drainProgress: interpolate all #8BAF3C usages toward a desaturated gray-beige using lerp on RGB channels"
+      ],
+      "key_interactions": [
+        "Click color guest cards to open speech bubble with stilted small talk unique to each guest color",
+        "Click 'Sign the Card' button to append a procedurally selected unhinged farewell message to cardMessages array and display card overlay",
+        "Click the honoree (glowing corner figure) to cycle through its quiet resigned monologue lines, setting honoreeSpoken true",
+        "Click 'Wind Down the Party' button (appears after honoreeSpoken) to trigger winding phase and drain animation",
+        "Click anywhere to dismiss open guest speech bubbles"
+      ],
+      "visual_style": "Room interior feel — warm off-white walls, #8BAF3C as the dominant accent everywhere (streamers, balloons, cake, borders). Guests rendered as colored rounded rectangles with name-tag labels. Slightly melancholy party aesthetic — Comic Sans for cake text, muted everything else. As drain progresses, color bleeds out leaving ghostly gray silhouettes.",
+      "key_implementation_notes": "Store the retiring color as RGB [139,175,60] and compute all derived colors via a drainColor(r,g,b,progress) helper that lerps toward [180,172,165] (absence gray). Guest data is a hardcoded array of {name, hex, quip} objects including Taupe, Mauve, Chartreuse, Ecru, Puce, Bisque. The honoree sits in an absolutely-positioned corner div with a radial-gradient glow using the retiring color. Card messages are drawn from a fixed array of increasingly unhinged strings ('I googled you once' — Periwinkle) selected in order on each sign click."
+    }
   }
 ]
