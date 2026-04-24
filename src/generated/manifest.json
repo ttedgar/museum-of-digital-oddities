@@ -717,5 +717,43 @@
       "visual_style": "Room interior feel — warm off-white walls, #8BAF3C as the dominant accent everywhere (streamers, balloons, cake, borders). Guests rendered as colored rounded rectangles with name-tag labels. Slightly melancholy party aesthetic — Comic Sans for cake text, muted everything else. As drain progresses, color bleeds out leaving ghostly gray silhouettes.",
       "key_implementation_notes": "Store the retiring color as RGB [139,175,60] and compute all derived colors via a drainColor(r,g,b,progress) helper that lerps toward [180,172,165] (absence gray). Guest data is a hardcoded array of {name, hex, quip} objects including Taupe, Mauve, Chartreuse, Ecru, Puce, Bisque. The honoree sits in an absolutely-positioned corner div with a radial-gradient glow using the retiring color. Card messages are drawn from a fixed array of increasingly unhinged strings ('I googled you once' — Periwinkle) selected in order on each sign click."
     }
+  },
+  {
+    "date": "2026-04-24",
+    "title": "Warranty Claim for a Feeling",
+    "description": "The feeling arrived damaged. The feeling was always damaged. The box was fine.",
+    "idea": "The user is presented with a sleek, modern product warranty registration portal — except the product they're registering is a feeling they received recently. They select from a dropdown of feelings ('a longing with no object,' 'unexpected pride about something small,' 'the specific grief of a Sunday at 4pm'), fill in fields like DATE OF ONSET, INTENSITY (rated in 'newtons of chest'), and WHETHER THE FEELING ARRIVED IN ORIGINAL PACKAGING. Submitting triggers a warranty assessment: the feeling is inspected by an automated system that finds minor defects, cross-references previous feeling purchases under the user's account (fabricated, eerily plausible), and determines coverage. The feeling is almost always denied — 'pre-existing condition,' 'user-induced wear,' 'feeling exceeded recommended use within 48 hours' — but the denial letter is so thorough, so sincere, and so specifically wrong about the user that it becomes its own strange comfort. A small checkbox at the bottom asks if they'd like to register another feeling. It is always pre-checked.",
+    "plan": {
+      "title": "Warranty Claim for a Feeling",
+      "state_variables": [
+        "selectedFeeling: string — chosen from dropdown of feelings",
+        "dateOfOnset: string — date input value",
+        "intensity: number — slider 1-100 representing newtons of chest",
+        "originalPackaging: string — 'yes'|'no'|'unsure'",
+        "usageContext: string — textarea for circumstances of feeling",
+        "submitted: boolean — whether form has been submitted",
+        "assessmentPhase: number — 0=idle,1=scanning,2=cross-referencing,3=determining,4=complete",
+        "denialReason: object — selected denial template with fabricated account history",
+        "registerAnother: boolean — always initialized true",
+        "claimId: string — fabricated claim number generated on submit"
+      ],
+      "effects": [
+        "When submitted=true, run a sequential timer chain advancing assessmentPhase every 1.2s through scanning/cross-referencing/determining/complete, simulating bureaucratic processing",
+        "When assessmentPhase reaches 4, derive denialReason by pseudo-randomly selecting from denial templates seeded by selectedFeeling+dateOfOnset combination, injecting fabricated account history (e.g. '3 prior claims for related feelings in the past 18 months')"
+      ],
+      "key_interactions": [
+        "Dropdown selection of feeling from list of ~10 eerily specific options",
+        "Date input for DATE OF ONSET",
+        "Slider for INTENSITY with live label showing current 'newtons of chest' value",
+        "Radio buttons for WHETHER FEELING ARRIVED IN ORIGINAL PACKAGING",
+        "Textarea for CIRCUMSTANCES OF RECEIPT",
+        "Submit button labeled 'FILE WARRANTY CLAIM' triggering assessment sequence",
+        "During assessment, display sequential status messages in monospace as each phase completes",
+        "Render full denial letter with fabricated claim ID, account history, and specific denial reason once complete",
+        "Pre-checked checkbox at bottom of denial letter: 'Register another feeling' — clicking resets form but keeps checkbox checked"
+      ],
+      "visual_style": "Sterile corporate white with cool gray borders, #1a1a2e navy accents, monospace fonts for system output sections, serif for the denial letter body — mimics a real SaaS product portal but the serif letter creates an uncanny intimacy. Small red 'DENIED' stamp rendered via CSS transform on the letter.",
+      "key_implementation_notes": "Store ~6 denial reason templates as objects with slots for feeling name and fabricated stats, selected deterministically via (feeling index + date char codes) % template count so the same inputs always yield the same eerily specific denial. The assessment phase ticker uses useRef to store timeout IDs for cleanup. The denial letter should be rendered as a distinct visual block with letterhead styling — company name 'FeelingCare Extended Protection LLC' — to maximize the bureaucratic sincerity. The 'DENIED' stamp is a absolutely-positioned div with red border, red text, and rotate(-15deg) transform overlaid on the letter."
+    }
   }
 ]
