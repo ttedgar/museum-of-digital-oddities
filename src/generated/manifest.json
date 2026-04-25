@@ -755,5 +755,39 @@
       "visual_style": "Sterile corporate white with cool gray borders, #1a1a2e navy accents, monospace fonts for system output sections, serif for the denial letter body — mimics a real SaaS product portal but the serif letter creates an uncanny intimacy. Small red 'DENIED' stamp rendered via CSS transform on the letter.",
       "key_implementation_notes": "Store ~6 denial reason templates as objects with slots for feeling name and fabricated stats, selected deterministically via (feeling index + date char codes) % template count so the same inputs always yield the same eerily specific denial. The assessment phase ticker uses useRef to store timeout IDs for cleanup. The denial letter should be rendered as a distinct visual block with letterhead styling — company name 'FeelingCare Extended Protection LLC' — to maximize the bureaucratic sincerity. The 'DENIED' stamp is a absolutely-positioned div with red border, red text, and rotate(-15deg) transform overlaid on the letter."
     }
+  },
+  {
+    "date": "2026-04-25",
+    "title": "Final Voicemail from a Number",
+    "description": "The digits have been trying to reach you regarding your extended warranty on a goodbye.",
+    "idea": "The screen presents a phone's voicemail inbox, but every message is from a phone number that no longer exists — disconnected area codes, numbers retired when exchanges closed, digits that were briefly assigned to a laundromat in 1987. Each voicemail plays as scrolling transcription text, and the messages are not threatening or mysterious — they are mundane, domestic, slightly off: someone reminding you about a casserole dish, a confirmation for an appointment in a month that has been removed from the calendar, a child asking if it's okay to come home now. The transcription system keeps flagging words it doesn't recognize as '[INAUDIBLE]' but the inaudible parts are always the most important ones. The user can press a star key to 'save' a voicemail, which causes it to immediately and permanently delete itself, thanking the user for listening. New voicemails arrive from increasingly impossible numbers — negative area codes, numbers with letters, a number that is just the word BEFORE repeated — until the inbox shows one unheard message from a number that is the user's own, left at a time that hasn't happened yet, and the transcription reads only: '[INAUDIBLE] but I meant it.'",
+    "plan": {
+      "title": "Final Voicemail from a Number",
+      "state_variables": [
+        "voicemails: array of voicemail objects (id, from, timestamp, label, transcript, saved, playing, scrollPos)",
+        "activeId: id of currently playing voicemail",
+        "deletedIds: set of permanently deleted voicemail ids",
+        "transcriptProgress: map of id->character index for scrolling transcription effect",
+        "newMessageQueue: counter driving arrival of impossible-number voicemails",
+        "finalRevealed: boolean for whether the user's own number message has appeared",
+        "starPressCount: tracks star key presses for interaction"
+      ],
+      "effects": [
+        "On mount: initialize inbox with 5-6 pre-loaded voicemails from impossible numbers, staggered with slight delays",
+        "When activeId changes: start transcriptProgress ticker for that voicemail, advancing character index every 40-60ms to simulate live transcription",
+        "Interval (every 25-35 seconds): push one new voicemail from increasingly impossible numbers into voicemails array with a 'NEW' flash, until finalRevealed condition met",
+        "When deletedIds reaches 2+ entries: trigger finalRevealed=true, append the user's-own-number voicemail",
+        "When transcriptProgress for a voicemail completes: mark that voicemail as fully transcribed"
+      ],
+      "key_interactions": [
+        "Click a voicemail row: sets it as activeId, begins scrolling transcription playback in a detail panel",
+        "Press * key (or on-screen * button) while a voicemail is active: triggers 'saving' animation then immediately deletes it, shows brief thank-you overlay ('Thank you for listening.') before it vanishes from list",
+        "Click a different voicemail mid-playback: interrupts current transcription, resets progress for new selection",
+        "Hover a voicemail row: subtle highlight, shows the impossible-number label more prominently",
+        "Final voicemail click: transcription types slowly, only '[INAUDIBLE] but I meant it.' with a long pause before each word"
+      ],
+      "visual_style": "Monochrome blue-grey like an old Nokia screen or carrier voicemail UI. Dark background (#0a0d12), phosphor-green (#7fff8a) for active transcription text, muted grey (#4a5568) for read messages, amber (#f6ad55) flash for new arrivals. Monospace font throughout. Feels like a phone UI from 2003 that has been running unattended for years.",
+      "key_implementation_notes": "Each voicemail transcript is pre-written as a string with [INAUDIBLE] tokens replacing key emotional words; the scrolling effect slices the string by character index so it feels like live captioning. The star-key delete is handled via a keydown listener on window as well as an on-screen button, and the deletion uses a two-step state: first mark as 'saving' (shows thank-you text in place of transcript), then after 1.8s remove from array entirely. Impossible numbers are generated from a deterministic list (negative codes like -1-800-BEFORE, letter-embedded numbers, the literal string 'BEFORE BEFORE BEFORE') rather than random generation to ensure the escalation feels authored. The final voicemail's 'from' field is computed at runtime as a plausible local number format with a future timestamp (current time + 3 years), making it feel personally addressed without any real data."
+    }
   }
 ]

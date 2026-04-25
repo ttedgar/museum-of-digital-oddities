@@ -24,6 +24,7 @@ import Page_2026_04_21 from './2026-04-21/index.jsx';
 import Page_2026_04_22 from './2026-04-22/index.jsx';
 import Page_2026_04_23 from './2026-04-23/index.jsx';
 import Page_2026_04_24 from './2026-04-24/index.jsx';
+import Page_2026_04_25 from './2026-04-25/index.jsx';
 
 export const registry = {
   '2026-04-02': Page_2026_04_02,
@@ -49,4 +50,5 @@ export const registry = {
   '2026-04-22': Page_2026_04_22,
   '2026-04-23': Page_2026_04_23,
   '2026-04-24': Page_2026_04_24,
+  '2026-04-25': Page_2026_04_25,
 };
