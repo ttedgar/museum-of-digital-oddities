@@ -789,5 +789,42 @@
       "visual_style": "Monochrome blue-grey like an old Nokia screen or carrier voicemail UI. Dark background (#0a0d12), phosphor-green (#7fff8a) for active transcription text, muted grey (#4a5568) for read messages, amber (#f6ad55) flash for new arrivals. Monospace font throughout. Feels like a phone UI from 2003 that has been running unattended for years.",
       "key_implementation_notes": "Each voicemail transcript is pre-written as a string with [INAUDIBLE] tokens replacing key emotional words; the scrolling effect slices the string by character index so it feels like live captioning. The star-key delete is handled via a keydown listener on window as well as an on-screen button, and the deletion uses a two-step state: first mark as 'saving' (shows thank-you text in place of transcript), then after 1.8s remove from array entirely. Impossible numbers are generated from a deterministic list (negative codes like -1-800-BEFORE, letter-embedded numbers, the literal string 'BEFORE BEFORE BEFORE') rather than random generation to ensure the escalation feels authored. The final voicemail's 'from' field is computed at runtime as a plausible local number format with a future timestamp (current time + 3 years), making it feel personally addressed without any real data."
     }
+  },
+  {
+    "date": "2026-04-26",
+    "title": "Live Broadcast: Nothing Is Happening",
+    "description": "A camera crew has been dispatched to the exact center of an uneventful moment. They are filing live reports.",
+    "idea": "The screen is formatted as a 24-hour news channel's live breaking coverage — chyrons scrolling, a reporter in a field, a studio anchor, the full graphic package — but the breaking news is a specific, perfectly ordinary moment that is currently not developing in any way. The reporter is standing outside a house where, eleven minutes ago, someone decided not to rearrange the furniture. The anchor throws to a correspondent tracking a thought someone had and then released without examining. Expert panels debate whether the pause before a reply email constitutes a developing situation. The chyron updates constantly: 'SOURCES CONFIRM: MOMENT CONTINUES. STILL NO ESCALATION. FEELING DESCRIBED AS FINE.' Users can click to 'go live' to different correspondents stationed at other non-events — a refrigerator that was opened and closed without taking anything, a dog that looked up and then looked back down — each one reported with the breathless overcaffeinated gravity of a historic crisis unfolding in real time, complete with a THREAT LEVEL graphic currently reading 'AMBIENT.'",
+    "plan": {
+      "title": "Live Broadcast: Nothing Is Happening",
+      "state_variables": [
+        "activeCorrespondent: index of currently selected correspondent/location",
+        "chyronText: current bottom ticker message string",
+        "chyronQueue: array of pending chyron messages to cycle through",
+        "tickerOffset: numeric pixel offset for scrolling ticker animation",
+        "breakingFlash: boolean toggling 'BREAKING' badge blink",
+        "threatLevel: string, always 'AMBIENT' but animates between sub-states",
+        "liveTimestamp: string showing elapsed time of non-event",
+        "panelSpeaker: index of which expert is currently 'speaking' in lower third",
+        "signalGlitch: boolean for occasional fake signal dropout effect",
+        "minutesSinceEvent: integer counting up from initial non-event time"
+      ],
+      "effects": [
+        "useEffect: ticker scroll — requestAnimationFrame loop incrementing tickerOffset, resetting when full queue has scrolled through",
+        "useEffect: chyron rotation — setInterval every 6s cycling through chyronQueue array updating chyronText",
+        "useEffect: BREAKING flash — setInterval every 800ms toggling breakingFlash boolean",
+        "useEffect: minutesSinceEvent counter — setInterval every 60s incrementing the elapsed time display",
+        "useEffect: panelSpeaker rotation — setInterval every 4s cycling through expert panel speakers",
+        "useEffect: random signal glitch — setInterval with random delay occasionally setting signalGlitch true for 200ms then false"
+      ],
+      "key_interactions": [
+        "Click correspondent cards along bottom bar to switch activeCorrespondent, updating main feed content and location chyron",
+        "Hover over THREAT LEVEL graphic to reveal tooltip: 'Situation assessed as: fine. Possibly fine-adjacent.'",
+        "Click 'GO LIVE' button to trigger fake transition animation (black flash + 'CONNECTING...' overlay) before switching feed",
+        "Click expert panel names to cycle their on-screen quote/analysis about the non-event"
+      ],
+      "visual_style": "Dark navy and charcoal base, urgent CNN/Fox red accents, white text, yellow BREAKING badges. Claustrophobic information density. Cold broadcast aesthetic — everything looks like it cost $40M to report absolutely nothing.",
+      "key_implementation_notes": "All correspondent data (name, location, non-event description, quote, field background color simulating outdoor light) stored as a static array of objects — switching activeCorrespondent swaps all content at once. Ticker is a single absolutely-positioned div with translateX animation driven by requestAnimationFrame against a joined string of all chyron messages. The main 'field reporter' area uses a CSS filter with slight hue-rotate and a semi-transparent overlay grid to simulate a live video feed without any actual video. Threat level meter is a purely decorative SVG arc that always points to AMBIENT regardless of interaction, with a subtle pulse animation."
+    }
   }
 ]
