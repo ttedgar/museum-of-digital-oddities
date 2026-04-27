@@ -826,5 +826,36 @@
       "visual_style": "Dark navy and charcoal base, urgent CNN/Fox red accents, white text, yellow BREAKING badges. Claustrophobic information density. Cold broadcast aesthetic — everything looks like it cost $40M to report absolutely nothing.",
       "key_implementation_notes": "All correspondent data (name, location, non-event description, quote, field background color simulating outdoor light) stored as a static array of objects — switching activeCorrespondent swaps all content at once. Ticker is a single absolutely-positioned div with translateX animation driven by requestAnimationFrame against a joined string of all chyron messages. The main 'field reporter' area uses a CSS filter with slight hue-rotate and a semi-transparent overlay grid to simulate a live video feed without any actual video. Threat level meter is a purely decorative SVG arc that always points to AMBIENT regardless of interaction, with a subtle pulse animation."
     }
+  },
+  {
+    "date": "2026-04-27",
+    "title": "Soil Type Quiz for Your Secrets",
+    "description": "The geologist arrives with instruments. The instruments are wrong. The ground confesses anyway.",
+    "idea": "The user is presented with a professional geological survey interface — field report template, soil core sample diagrams, a rotating compass rose — but the survey is analyzing the composition of a secret the user is currently keeping. They answer a series of earnest field-geology questions: 'At what depth does the secret become load-bearing?' 'Is the secret sedimentary (accumulated over time) or igneous (formed suddenly under pressure)?' 'Has any settling occurred near the foundation of your daily routine?' Based on their answers, the system generates an official USDA-style soil classification for their secret: 'LOAM-ADJACENT CONCEALMENT, moderate porosity, risk of subsidence near prolonged eye contact.' The report includes a cross-section diagram of the secret's layers, rendered in geological strata colors with clinical labels like 'OXIDIZED JUSTIFICATION LAYER (ca. 2019)' and 'COMPACTED ORIGINAL FEELING — do not disturb.' A final recommendation appears, stamped and signed by a Field Geologist whose name is just a set of initials and a credential that doesn't exist, advising whether the secret should be 'left fallow,' 'gently aerated,' or 'condemned and the site returned to nature.'",
+    "plan": {
+      "title": "Soil Type Quiz for Your Secrets",
+      "state_variables": [
+        "currentQuestion (number index into questions array)",
+        "answers (object mapping question id to selected answer)",
+        "phase ('intro' | 'survey' | 'analyzing' | 'report')",
+        "analysisProgress (0-100 for fake loading bar)",
+        "compassAngle (number for rotating compass animation)",
+        "reportData (object with classification, layers, recommendation, geologist)"
+      ],
+      "effects": [
+        "Rotate compass rose continuously via setInterval updating compassAngle",
+        "When phase='analyzing', increment analysisProgress over ~3s with setInterval, then compute reportData from answers and set phase='report'",
+        "On mount, set phase='intro' and initialize compass rotation"
+      ],
+      "key_interactions": [
+        "Click 'BEGIN FIELD SURVEY' on intro screen to enter survey phase",
+        "Select one of 3-4 multiple choice answers per question (styled as radio options on field report paper)",
+        "Auto-advance to next question on answer selection",
+        "After final question, trigger analyzing phase with progress bar",
+        "Receive generated report; click 'PRINT / ARCHIVE' to trigger window.print or reset"
+      ],
+      "visual_style": "Aged government document aesthetic — off-white/cream background (#F5F0E8), dark olive and brown ink (#3B3220), monospace fonts throughout, faint grid lines, worn stamp effects in red (#8B1A1A). Clinical, bureaucratic, slightly uncanny. Strata diagram uses muted geological colors: ochre, slate blue, rust, clay.",
+      "key_implementation_notes": "Questions array is hardcoded with 5-6 earnest geological questions each having 3 answer options tagged with traits (e.g. sedimentary/igneous, depth:shallow/deep, porosity:high/low). reportData is deterministically computed from answer trait tallies using lookup tables for classification name, 4-5 strata layer descriptions with fake dates, and one of three recommendations. The cross-section diagram is rendered as stacked divs with varying heights, colors, and absolutely-positioned labels — no canvas needed. Compass rose is a pure CSS/inline SVG polygon rotated via transform style updated from state."
+    }
   }
 ]
