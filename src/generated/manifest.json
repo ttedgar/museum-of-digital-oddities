@@ -857,5 +857,40 @@
       "visual_style": "Aged government document aesthetic — off-white/cream background (#F5F0E8), dark olive and brown ink (#3B3220), monospace fonts throughout, faint grid lines, worn stamp effects in red (#8B1A1A). Clinical, bureaucratic, slightly uncanny. Strata diagram uses muted geological colors: ochre, slate blue, rust, clay.",
       "key_implementation_notes": "Questions array is hardcoded with 5-6 earnest geological questions each having 3 answer options tagged with traits (e.g. sedimentary/igneous, depth:shallow/deep, porosity:high/low). reportData is deterministically computed from answer trait tallies using lookup tables for classification name, 4-5 strata layer descriptions with fake dates, and one of three recommendations. The cross-section diagram is rendered as stacked divs with varying heights, colors, and absolutely-positioned labels — no canvas needed. Compass rose is a pure CSS/inline SVG polygon rotated via transform style updated from state."
     }
+  },
+  {
+    "date": "2026-04-28",
+    "title": "Simultaneous Translator for Silences",
+    "description": "Four linguists argue about what the quiet meant. The quiet was not consulted.",
+    "idea": "The screen presents a live UN-style simultaneous interpretation booth interface — headsets, language selector flags, a glowing ON AIR indicator — but the source material being translated is a specific silence. The user selects a silence from a dropdown ('the silence after a question that was too honest,' 'the silence when someone opens a gift you gave,' 'the silence in a car after a song ends and no one changes it') and four interpreter booths immediately begin translating it simultaneously into invented emotional languages: Tertian (a language made entirely of throat-clearings and unfinished sentences), Oblique (which has forty words for 'almost'), Mute Formal, and the language spoken only by people who have recently moved furniture. Each interpreter's booth shows their scrolling transcript in real time — all four wildly disagree, occasionally argue with each other via footnote, and one interpreter eventually stops translating and begins filing a formal complaint about the silence itself, calling it 'structurally ambiguous and possibly intentional.' The user can click any booth to 'request clarification,' which causes the interpreter to pause, look directly at the camera, and say something that has nothing to do with the silence but feels devastatingly relevant. The final translation summary reads: 'Meaning: disputed. Duration: ongoing. Recommended response: another silence, slightly warmer.'",
+    "plan": {
+      "title": "Simultaneous Translator for Silences",
+      "state_variables": [
+        "selectedSilence: string — currently chosen silence from dropdown",
+        "isTranslating: boolean — whether booths are actively streaming text",
+        "boothTranscripts: object[4] — array of transcript strings per booth, built up over time",
+        "boothStates: object[4] — 'translating'|'arguing'|'complaining'|'clarifying' per booth",
+        "clarifyingBooth: number|null — index of booth currently in clarification mode",
+        "clarificationText: string — the devastatingly irrelevant clarification line",
+        "showSummary: boolean — whether final translation summary is visible",
+        "onAir: boolean — blinking ON AIR state",
+        "tickCount: number — master tick counter driving all transcript animations"
+      ],
+      "effects": [
+        "useEffect on selectedSilence: resets all transcripts, sets isTranslating true, resets showSummary false, starts fresh generation cycle",
+        "useEffect on isTranslating/tickCount: interval every 400ms increments tickCount, appends new transcript fragments to each booth based on tick and booth personality, triggers boothState transitions at certain tick thresholds (arguing at tick 8, complaint at tick 15, summary at tick 22)",
+        "useEffect for ON AIR blink: 800ms interval toggling onAir boolean while isTranslating",
+        "useEffect cleanup: clears all intervals on unmount"
+      ],
+      "key_interactions": [
+        "Dropdown select silence: triggers full reset and new translation session for all four booths",
+        "Click booth: sets clarifyingBooth to that index, pauses that booth transcript, displays a pre-written clarification non-sequitur overlay for 3 seconds then resumes",
+        "Booth footnote cross-references: at certain tick counts, a booth's transcript appends a '[see Booth 3]' style argument fragment referencing another booth",
+        "Auto-progression: Booth 3 (Mute Formal) eventually stops mid-sentence and its state switches to 'complaining', rendering a formal complaint document instead of transcript",
+        "Final summary auto-appears at tick 22 as a centered UN-style resolution block"
+      ],
+      "visual_style": "Dark diplomatic grey-green (#1a1f1a background), amber and pale green terminal glow for transcripts, red blinking ON AIR badge, four booths as dark panels with frosted glass feel via rgba borders, UN-blue accents on headers, monospace fonts throughout, dense bureaucratic aesthetic with occasional absurdist warmth",
+      "key_implementation_notes": "Each booth has a hardcoded pool of transcript fragments per silence type, selected and revealed progressively by tickCount modulo arithmetic to simulate live typing. Clarification texts are a flat array of ~12 non-sequiturs shared across booths, picked randomly on click. Booth transcript divs use overflow-y scroll with auto-scroll via scrollTop=scrollHeight on each update. The formal complaint in Booth 3 is a separate pre-written JSX block that replaces the transcript div when boothState[2]==='complaining', styled as an official UN document with strikethroughs and margin notes."
+    }
   }
 ]
