@@ -892,5 +892,38 @@
       "visual_style": "Dark diplomatic grey-green (#1a1f1a background), amber and pale green terminal glow for transcripts, red blinking ON AIR badge, four booths as dark panels with frosted glass feel via rgba borders, UN-blue accents on headers, monospace fonts throughout, dense bureaucratic aesthetic with occasional absurdist warmth",
       "key_implementation_notes": "Each booth has a hardcoded pool of transcript fragments per silence type, selected and revealed progressively by tickCount modulo arithmetic to simulate live typing. Clarification texts are a flat array of ~12 non-sequiturs shared across booths, picked randomly on click. Booth transcript divs use overflow-y scroll with auto-scroll via scrollTop=scrollHeight on each update. The formal complaint in Booth 3 is a separate pre-written JSX block that replaces the transcript div when boothState[2]==='complaining', styled as an official UN document with strikethroughs and margin notes."
     }
+  },
+  {
+    "date": "2026-04-29",
+    "title": "Complaint Box at the Edge of Space",
+    "description": "A grievance filed against the void. The void has read your complaint. The void is typing.",
+    "idea": "The user discovers an official NASA-adjacent complaint portal called COSMOS GRIEVANCE DIVISION — where humans submit formal objections to specific facts about the universe. Options include 'The sun is an unreasonable distance away given my commute,' 'I was not consulted during the formation of matter,' and 'The speed of light is clearly a vendor limitation, not a physical law.' After submitting, the complaint enters a review queue — and the Universe itself responds via form letter, written in the tone of a large corporation that is genuinely sorry for the inconvenience but cannot change the fundamental nature of existence at this time. The response always includes a ticket number, a projected resolution date listed as 'Heat Death +3 business days,' and a single line of boilerplate that is somehow the most comforting thing the user has ever read. A live counter shows total complaints filed against the universe today — a number so large it has its own scientific notation, labeled 'mostly from Earth, mostly on Tuesdays.'",
+    "plan": {
+      "title": "Complaint Box at the Edge of Space",
+      "state_variables": [
+        "selectedComplaint: index of chosen grievance from predefined list, or null",
+        "customComplaint: string for user-typed custom grievance",
+        "submissionState: 'idle' | 'submitting' | 'typing' | 'responded'",
+        "responseText: string built up character by character for typewriter effect",
+        "ticketNumber: generated alphanumeric string on submit",
+        "totalComplaints: large number with scientific notation, increments on load",
+        "typingDots: 0-3 for animated ellipsis while void is typing"
+      ],
+      "effects": [
+        "On mount: set totalComplaints to a seeded absurdly large number (e.g. 3.7e14), then increment it every 2-3 seconds by random 1-5",
+        "When submissionState becomes 'typing': run typewriter effect on full response letter string, updating responseText char by char every 30ms, then set state to 'responded'",
+        "When submissionState is 'submitting': show 2-second delay then transition to 'typing' state",
+        "Animate typingDots 0->1->2->3->0 on 400ms interval while state is 'typing'"
+      ],
+      "key_interactions": [
+        "Click a predefined complaint option to select it (highlights it, deselects others)",
+        "Type in a freeform textarea for custom grievance",
+        "Submit button triggers the full submission->typing->response flow",
+        "Reset/File Another button returns to idle state and clears selection",
+        "Hover states on complaint options for subtle highlight"
+      ],
+      "visual_style": "Deep space dark background (#050a14), cold institutional blue-white text, monospace font throughout. Header mimics a government form portal with a faded NASA-worm-style logo text. Response letter rendered as an official memo with subtle off-white card on dark bg. Muted amber accent for ticket numbers and status. Austere, bureaucratic, slightly absurd — like a USPS form printed in the vacuum of space.",
+      "key_implementation_notes": "Predefined complaints array contains 6-7 options rendered as selectable radio-style cards; custom textarea is always available as an alternative. The response letter is a single long template string with ticket number and selected complaint interpolated, built at submit time, then revealed via typewriter. The 'void is typing' indicator uses animated dots and a faint pulsing glow effect via inline style keyframe workaround using a CSS string injected into a style tag via useEffect on mount — this is the only DOM side effect needed to handle keyframe animations without external CSS."
+    }
   }
 ]
