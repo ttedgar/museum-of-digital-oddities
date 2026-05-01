@@ -925,5 +925,41 @@
       "visual_style": "Deep space dark background (#050a14), cold institutional blue-white text, monospace font throughout. Header mimics a government form portal with a faded NASA-worm-style logo text. Response letter rendered as an official memo with subtle off-white card on dark bg. Muted amber accent for ticket numbers and status. Austere, bureaucratic, slightly absurd — like a USPS form printed in the vacuum of space.",
       "key_implementation_notes": "Predefined complaints array contains 6-7 options rendered as selectable radio-style cards; custom textarea is always available as an alternative. The response letter is a single long template string with ticket number and selected complaint interpolated, built at submit time, then revealed via typewriter. The 'void is typing' indicator uses animated dots and a faint pulsing glow effect via inline style keyframe workaround using a CSS string injected into a style tag via useEffect on mount — this is the only DOM side effect needed to handle keyframe animations without external CSS."
     }
+  },
+  {
+    "date": "2026-05-01",
+    "title": "Rehearsal Dinner for a Decision",
+    "description": "The fork in the road has a seating chart. The napkins are folded into regrets. Someone brought a casserole called Yes.",
+    "idea": "The user receives a formal invitation to the Rehearsal Dinner for a decision they are about to make — the decision is never named, only described by its seating chart and catering choices. They must click through the event as a guest: assign themselves a table (Table 4: People Who Already Knew, Table 7: Consequences, Table 2: The Version That Doesn't Come), order from a menu of courses that are stages of commitment ('Amuse-bouche: First Awareness,' 'Entrée: The Point of No Return, served medium'), and toast a series of increasingly unhinged speeches from the decision's relatives — Doubt, The Previous Decision, and a distant cousin called Fine Then. When the dinner ends, the decision itself never actually happens on screen — only the rehearsal, which loops, growing slightly more formal and slightly more desperate each time, as though the rehearsal is trying to become the real thing by sheer repetition.",
+    "plan": {
+      "title": "Rehearsal Dinner for a Decision",
+      "state_variables": [
+        "phase: string — current dinner phase ('invitation'|'seating'|'menu'|'speeches'|'end')",
+        "loopCount: number — how many times dinner has looped (0+)",
+        "selectedTable: number|null — which table guest chose (2,4,7)",
+        "selectedCourses: string[] — ordered menu courses",
+        "currentSpeechIndex: number — which speech is being delivered (0-2)",
+        "speechProgress: number — how far through current speech (0-100)",
+        "toastRaised: boolean — whether user has raised glass for current toast",
+        "formalityLevel: number — increases each loop, affects typography/tone",
+        "napkinUnfolded: boolean — whether user has unfolded napkin to read regret"
+      ],
+      "effects": [
+        "When speechProgress < 100 and phase==='speeches' and toastRaised===false, auto-increment speechProgress on interval to simulate speech droning on",
+        "When loopCount increases, increment formalityLevel and apply increasingly ornate/desperate visual transformations (font size, letter-spacing, border thickness)",
+        "When phase==='end', after 3s delay set phase back to 'invitation' and increment loopCount"
+      ],
+      "key_interactions": [
+        "Invitation screen: click wax-seal RSVP button to accept and enter dinner",
+        "Seating screen: click one of three table cards (Table 2, 4, or 7) to be seated — each has flavor text that changes each loop",
+        "Napkin click: unfold napkin to reveal a folded regret (short poetic line, different each loop)",
+        "Menu screen: click each course item to 'order' it, courses must be selected in order, each has a description that grows more ominous per loop",
+        "Speech screen: hold/click 'Raise Glass' button to toast — must hold through each speech; releasing early shows a mild consequence text",
+        "End screen: single button 'The Rehearsal Has Concluded' which triggers the loop restart",
+        "Throughout: hovering over table numbers reveals who is seated there (changes per loop)"
+      ],
+      "visual_style": "Cream/ivory background with deep burgundy and gold accents. Engraved-invitation aesthetic — serif fonts (Georgia), thin ornamental borders, centered formal layout. Each loop adds more decorative elements, more desperate italic emphasis, slightly off-kilter rotations on cards. Mood: suffocating formality barely containing existential dread.",
+      "key_implementation_notes": "Use loopCount to derive formalityLevel which scales letter-spacing (up to 0.3em), border-width, and font-size of headings — making each loop feel more overwrought. Store all content (table descriptions, menu items, speeches, regrets) as arrays of arrays indexed by Math.min(loopCount, maxVariants-1) so content degrades/escalates gracefully. The speech component uses a setInterval that fills a progress bar; toastRaised pauses it so user must actively participate. Napkin unfold is a CSS-in-JS transform toggling scaleY from 0.15 to 1 with transition on a folded rectangle div."
+    }
   }
 ]
