@@ -961,5 +961,41 @@
       "visual_style": "Cream/ivory background with deep burgundy and gold accents. Engraved-invitation aesthetic — serif fonts (Georgia), thin ornamental borders, centered formal layout. Each loop adds more decorative elements, more desperate italic emphasis, slightly off-kilter rotations on cards. Mood: suffocating formality barely containing existential dread.",
       "key_implementation_notes": "Use loopCount to derive formalityLevel which scales letter-spacing (up to 0.3em), border-width, and font-size of headings — making each loop feel more overwrought. Store all content (table descriptions, menu items, speeches, regrets) as arrays of arrays indexed by Math.min(loopCount, maxVariants-1) so content degrades/escalates gracefully. The speech component uses a setInterval that fills a progress bar; toastRaised pauses it so user must actively participate. Napkin unfold is a CSS-in-JS transform toggling scaleY from 0.15 to 1 with transition on a folded rectangle div."
     }
+  },
+  {
+    "date": "2026-05-02",
+    "title": "The Noise Your Name Makes",
+    "description": "A frequency that has been mispronouncing itself since birth. The waveform files a correction.",
+    "idea": "The user types their name and watches it get processed by a fake audio analysis terminal that treats their name as a sound file with serious quality issues. The terminal runs a suite of absurd diagnostic tests — checking for 'tonal sincerity,' 'syllabic load-bearing capacity,' 'resonance against empty rooms' — and returns a full audio engineering report: the name is too bright in the mid-range, has phase cancellation near the second vowel, and was 'clearly mastered in a hurry.' The user can click to apply 'fixes' — each one warps how their name is displayed and described in increasingly unhinged ways, respelling it phonetically in a system that uses no real phonetic alphabet, running it through a 'reverb chamber' that reveals what the name sounds like in a cathedral, a parking garage, inside a very small coat. The final 'master' is presented as a waveform that pulses gently and is described as 'the version your name always wanted to be, before language got involved.' The whole thing is formatted like a professional audio DAW interface — tracks, meters, EQ curves — applied with complete sincerity to the idea that your name is a flawed recording of something that can't quite be captured.",
+    "plan": {
+      "title": "The Noise Your Name Makes",
+      "state_variables": [
+        "nameInput: string — raw user input",
+        "phase: string — 'idle' | 'analyzing' | 'report' | 'fixing' | 'mastered'",
+        "analysisLog: string[] — lines of terminal diagnostic output",
+        "logIndex: number — current line being revealed (for typewriter effect)",
+        "appliedFixes: string[] — list of fix IDs applied so far",
+        "warpedName: string — current display of name after fixes",
+        "pulsePhase: number — 0-1 float for waveform animation tick",
+        "activeMeters: {[key:string]: number} — fake VU meter levels per channel",
+        "eqPoints: number[] — 8 EQ band values for fake curve display",
+        "fixIndex: number — which fix step we're on (0-4)"
+      ],
+      "effects": [
+        "When phase='analyzing', use setInterval to append analysisLog lines one by one at ~80ms intervals, advancing logIndex; when all lines exhausted set phase='report'",
+        "When phase='fixing', animate activeMeters with random jitter via setInterval to simulate live signal",
+        "When phase='mastered', use setInterval to increment pulsePhase in a sine loop for waveform pulse animation",
+        "When nameInput changes, recompute eqPoints as deterministic pseudo-random values seeded from char codes"
+      ],
+      "key_interactions": [
+        "Text input for name entry + 'Run Analysis' button that triggers phase='analyzing' and builds the full diagnostic log from name properties",
+        "Clicking individual 'Apply Fix' buttons (5 total: Tonal Correction, Phase Align, Syllabic Rebalance, Reverb Chamber, Emergency Mastering) each warp warpedName differently and advance fixIndex",
+        "Reverb Chamber fix opens a sub-panel letting user pick environment (cathedral, parking garage, small coat) each with a different absurd respelling",
+        "Final 'Commit Master' button transitions to phase='mastered' showing pulsing waveform and final poetic description",
+        "Clicking waveform in mastered state triggers a subtle glitch animation on the warped name display"
+      ],
+      "visual_style": "Dark charcoal (#1a1a1f) background, phosphor green (#00ff88) primary text and meters, amber (#ffaa00) for warnings/errors, muted steel blue (#4a6fa5) for inactive tracks. Monospace font throughout. Dense, clinical DAW aesthetic — horizontal track lanes, segmented LED-style meter bars, dotted grid lines. Cold and procedural with creeping surrealism in the copy.",
+      "key_implementation_notes": "Build the diagnostic log lines as a function of the name: extract vowel positions, syllable count estimate (vowel clusters), char count, and first/last char to generate specific fake measurements that feel personal. Warp functions should be composable string transforms: phase-align swaps vowels with unicode lookalikes, reverb adds trailing echo chars, phonetic respelling uses a hardcoded absurd substitution map (e.g. 'a'→'æh', 'e'→'ɛɪ'). The EQ curve is drawn on a canvas element using bezier curves through the eqPoints array, redrawn on each meter tick. Waveform in mastered state is also canvas-drawn: sum of 3 sine waves with slowly drifting frequencies using pulsePhase as time offset."
+    }
   }
 ]
