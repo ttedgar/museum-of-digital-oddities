@@ -997,5 +997,37 @@
       "visual_style": "Dark charcoal (#1a1a1f) background, phosphor green (#00ff88) primary text and meters, amber (#ffaa00) for warnings/errors, muted steel blue (#4a6fa5) for inactive tracks. Monospace font throughout. Dense, clinical DAW aesthetic — horizontal track lanes, segmented LED-style meter bars, dotted grid lines. Cold and procedural with creeping surrealism in the copy.",
       "key_implementation_notes": "Build the diagnostic log lines as a function of the name: extract vowel positions, syllable count estimate (vowel clusters), char count, and first/last char to generate specific fake measurements that feel personal. Warp functions should be composable string transforms: phase-align swaps vowels with unicode lookalikes, reverb adds trailing echo chars, phonetic respelling uses a hardcoded absurd substitution map (e.g. 'a'→'æh', 'e'→'ɛɪ'). The EQ curve is drawn on a canvas element using bezier curves through the eqPoints array, redrawn on each meter tick. Waveform in mastered state is also canvas-drawn: sum of 3 sine waves with slowly drifting frequencies using pulsePhase as time offset."
     }
+  },
+  {
+    "date": "2026-05-03",
+    "title": "Grocery List from a Parallel You",
+    "description": "Milk. Regret (2%). Something for the thing on Thursday. The you that shops here has slightly different hands.",
+    "idea": "The screen displays a handwritten-style grocery list from a version of the user who made one different choice — but which choice is never stated, only implied by the items. The list contains normal groceries interspersed with items that shouldn't exist: 'the apology (store brand is fine),' 'fresh dill,' 'whatever you called hope before you had a word for it,' 'more of the same (see last week).' The user can cross items off by clicking them, which causes the parallel self to add a replacement item that is slightly more specific and slightly more unsettling than what was crossed off. A small note at the bottom of the list, written in different handwriting, says 'don't forget' — but the thing not to forget is always redacted with a thick black line that occasionally shifts. When the user crosses off everything on the list, a receipt prints from the bottom of the page itemizing every crossed-off item, calculating a total in a currency called VARIANCE, and ending with a cheerful cashier note: 'Thank you for shopping. We hope to see the other one next time.'",
+    "plan": {
+      "title": "Grocery List from a Parallel You",
+      "state_variables": [
+        "items: array of {id, text, crossed, replacement} — the current list state",
+        "crossedIds: Set of crossed-off item ids",
+        "receiptVisible: boolean — whether the receipt has printed",
+        "redactedShift: number — pixel offset for the shifting redaction bar",
+        "replacementQueue: array of pending replacement items being 'typed' in",
+        "typingItemId: id of item currently being typed into existence"
+      ],
+      "effects": [
+        "useEffect on mount: start subtle redaction bar shift on interval (every 3-5s, random small offset)",
+        "useEffect on crossedIds change: when an item is crossed, trigger typewriter animation adding replacement item after short delay",
+        "useEffect on items: when all items are crossed, set receiptVisible true after 1.2s delay",
+        "useEffect for typewriter: animate replacement text character by character into replacementQueue item"
+      ],
+      "key_interactions": [
+        "Click item text to cross it off (strikethrough + faded) and queue a replacement item below it",
+        "Replacement item types itself in character by character with a blinking cursor",
+        "When all items crossed, receipt slides up from bottom with animation",
+        "Receipt shows each crossed item, a VARIANCE total (random float arithmetic), and cashier closing note",
+        "Redaction bar at bottom occasionally slides/shifts position slightly on its own"
+      ],
+      "visual_style": "Off-white aged paper background (#f5f0e8), dark ink (#1a1a2e), handwritten-feel via Georgia/cursive font mix, receipt in monospace on slightly whiter paper, muted and slightly uncanny — warm but wrong",
+      "key_implementation_notes": "Use two font families: a cursive/Georgia stack for list items and monospace for the receipt to sell the thermal-printer aesthetic. Replacement items are stored in the items array with a `typed` string that grows character by character via setInterval in a useEffect watching replacementQueue. The redaction bar is a position:absolute black rectangle whose `left` offset is tweened via state on an interval. Receipt slide-in is achieved with a CSS transition on maxHeight/transform via inline style toggled by receiptVisible."
+    }
   }
 ]
