@@ -1029,5 +1029,42 @@
       "visual_style": "Off-white aged paper background (#f5f0e8), dark ink (#1a1a2e), handwritten-feel via Georgia/cursive font mix, receipt in monospace on slightly whiter paper, muted and slightly uncanny — warm but wrong",
       "key_implementation_notes": "Use two font families: a cursive/Georgia stack for list items and monospace for the receipt to sell the thermal-printer aesthetic. Replacement items are stored in the items array with a `typed` string that grows character by character via setInterval in a useEffect watching replacementQueue. The redaction bar is a position:absolute black rectangle whose `left` offset is tweened via state on an interval. Receipt slide-in is achieved with a CSS transition on maxHeight/transform via inline style toggled by receiptVisible."
     }
+  },
+  {
+    "date": "2026-05-04",
+    "title": "Live Migration of Your Attention",
+    "description": "The technicians have located the thing you were just thinking about. It is heavier than expected. It does not want to be moved.",
+    "idea": "The screen presents an IT infrastructure migration dashboard — server racks, progress bars, network topology diagrams — but the system being migrated is the user's current attention span. A team of deadpan technicians (rendered as small labeled avatars in a sidebar chat) are in the process of physically relocating whatever the user was thinking about before they opened this page to a new data center called 'HERE.' The migration keeps encountering problems: the attention has legacy dependencies ('this thought is still mounted to something from 2017'), packet loss during the transfer of focus, and a recurring warning that 'the destination environment does not support this level of ambient dread.' The user can click to 'assist' the technicians with specific tasks — rerouting a memory, force-quitting a background process labeled something uncomfortably specific — but each intervention spawns three new incidents. The migration never completes. A final status update from Lead Technician BRHL-7 reads: 'We have stabilized the attention in a temporary container. It is asking questions we are not equipped to answer. We recommend leaving it here for now.'",
+    "plan": {
+      "title": "Live Migration of Your Attention",
+      "state_variables": [
+        "migrationProgress: number 0-73 (never reaches 100)",
+        "incidents: array of incident objects {id, severity, message, timestamp, resolved}",
+        "techChat: array of chat messages from technicians",
+        "activeWarnings: array of current warning strings",
+        "userInterventions: number count of times user has clicked to help",
+        "currentPhase: string — migration phase label",
+        "packetLoss: number percentage",
+        "stabilized: boolean — true after ~8 interventions, triggers final BRHL-7 message",
+        "blinkingNodes: array of node ids currently alarming in topology",
+        "memoryFragments: array of draggable labeled memory objects with position and mounted state"
+      ],
+      "effects": [
+        "Interval every 3-4s: advance migrationProgress by 0-3 but clamp at 73, add random incident or technician chat message",
+        "Interval every 6s: rotate currentPhase through phases like 'UNMOUNTING ATTENTION', 'SERIALIZING FOCUS', 'PACKET TRANSFER', 'DEPENDENCY RESOLUTION FAILED'",
+        "Interval every 2s: fluctuate packetLoss between 12-67%",
+        "Interval every 5s: randomly toggle blinkingNodes for topology alarm effect",
+        "Effect on userInterventions change: spawn 3 new incidents for each intervention, check if stabilized threshold reached"
+      ],
+      "key_interactions": [
+        "Click incident row 'ASSIST' button: marks incident resolved but spawns 3 new incidents with increasingly personal/specific labels",
+        "Click memory fragment nodes in topology: triggers technician comment about legacy dependencies from specific years",
+        "Click 'FORCE QUIT' on background process items: spawns warning about orphaned threads",
+        "Click 'REROUTE' on network path: temporarily reduces packet loss then spikes it higher after 2s",
+        "After stabilized=true: final BRHL-7 message appears as pinned chat, all controls dim but remain clickable with sad technician responses"
+      ],
+      "visual_style": "Dark terminal green on near-black (#0a0f0a background, #00ff41 primary text), amber (#ffb000) for warnings, red (#ff3333) for critical alerts. Monospace font throughout. Three-panel layout: left topology diagram, center progress/incidents dashboard, right technician chat sidebar. Clinical, bureaucratic, faintly existential. Blinking cursors and scanline-style horizontal rules.",
+      "key_implementation_notes": "Topology diagram is SVG with ~8 labeled nodes (PREFRONTAL, MEMORY-2017, AMBIENT-DREAD, etc.) connected by animated dashed lines, nodes pulse red/green based on blinkingNodes state. Incidents array is prepopulated with 20+ hardcoded darkly-specific messages and new ones are drawn from a pool using index cycling so they never repeat awkwardly. Migration progress uses a custom easing that slows dramatically above 65 and mathematically cannot exceed 73. All technician chat messages are pre-written in a flat bureaucratic register and dispatched on timers with slight randomization; BRHL-7 final message is a separate pinned element that slides in."
+    }
   }
 ]
