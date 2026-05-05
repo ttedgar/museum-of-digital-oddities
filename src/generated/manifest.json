@@ -1066,5 +1066,37 @@
       "visual_style": "Dark terminal green on near-black (#0a0f0a background, #00ff41 primary text), amber (#ffb000) for warnings, red (#ff3333) for critical alerts. Monospace font throughout. Three-panel layout: left topology diagram, center progress/incidents dashboard, right technician chat sidebar. Clinical, bureaucratic, faintly existential. Blinking cursors and scanline-style horizontal rules.",
       "key_implementation_notes": "Topology diagram is SVG with ~8 labeled nodes (PREFRONTAL, MEMORY-2017, AMBIENT-DREAD, etc.) connected by animated dashed lines, nodes pulse red/green based on blinkingNodes state. Incidents array is prepopulated with 20+ hardcoded darkly-specific messages and new ones are drawn from a pool using index cycling so they never repeat awkwardly. Migration progress uses a custom easing that slows dramatically above 65 and mathematically cannot exceed 73. All technician chat messages are pre-written in a flat bureaucratic register and dispatched on timers with slight randomization; BRHL-7 final message is a separate pinned element that slides in."
     }
+  },
+  {
+    "date": "2026-05-05",
+    "title": "Impound Lot for Borrowed Moods",
+    "description": "The feeling arrived in someone else's coat. The coat has been towed. You have thirty days.",
+    "idea": "The user arrives at an official municipal impound lot for moods they picked up from other people and never returned — absorbed from a stranger on a train, caught from a coworker's Tuesday, inhaled secondhand from a waiting room. Each impounded mood sits in a numbered lot space: a small labeled rectangle with the original owner listed as 'UNKNOWN CIVILIAN' or 'THE PERSON HUMMING IN THE PARKING GARAGE,' a date of acquisition, current mileage in 'days carried,' and an impound fee accumulating in real time. The user can pay the fine to release a mood (which causes it to float off the lot with a small 'RETURNED TO ATMOSPHERE' stamp) or contest ownership via a grievance form — but the clerk, a deadpan scrolling response system, always rules against them on the grounds that 'sustained internal residency constitutes emotional squatting.' Some moods have been there so long they've been classified as abandoned property and quietly transferred to the user's permanent record. The lot is nearly full. New moods are being towed in as the user watches.",
+    "plan": {
+      "title": "Impound Lot for Borrowed Moods",
+      "state_variables": [
+        "moods: array of mood objects with id, label, originalOwner, dateAcquired, daysCarried, feePerSecond, accruedFee, status ('impounded'|'released'|'abandoned'|'contested')",
+        "tick: integer incrementing every second to drive live fee accumulation",
+        "contestingMoodId: id of mood currently being contested (null if none)",
+        "clerkMessages: array of clerk response strings shown after contest",
+        "releasingMoodId: id of mood currently animating release (null if none)",
+        "newlyTowedId: id of most recently towed-in mood for entrance animation",
+        "permanentRecord: array of mood labels classified as abandoned"
+      ],
+      "effects": [
+        "setInterval every 1000ms: increment tick, update accruedFee on all impounded moods, randomly tow in a new mood every ~25-40 seconds, classify oldest moods (daysCarried>800) as abandoned and push to permanentRecord",
+        "On releasingMoodId set: after 2500ms timeout clear it and remove mood from active list",
+        "On mount: initialize 6-8 pre-populated moods with varied daysCarried and owners, stagger newlyTowedId animation for first arrival"
+      ],
+      "key_interactions": [
+        "Pay Fine button: sets releasingMoodId, triggers float-up CSS animation via inline style transform/opacity transition, stamps 'RETURNED TO ATMOSPHERE' overlay",
+        "Contest Ownership button: sets contestingMoodId, opens inline grievance form with a text area and Submit Grievance button",
+        "Submit Grievance: clears form, appends a deadpan clerk ruling to clerkMessages array referencing 'emotional squatting' doctrine, mood status becomes 'contested' with fee doubled",
+        "Dismiss clerk message: removes from clerkMessages array",
+        "Scroll lot: moods laid out in a scrollable grid of numbered lot spaces"
+      ],
+      "visual_style": "Municipal brutalist — off-white/concrete #E8E4DC background, faded yellow lot-line borders, monospace font throughout, muted orange #C8622A for fees and warnings, institutional blue-gray #4A5568 for headers, red stamp effect for RETURNED TO ATMOSPHERE. Fluorescent flatness, bureaucratic dread.",
+      "key_implementation_notes": "Each mood card uses a ref-keyed inline style for the release animation: on release, apply transform translateY(-120vh) and opacity 0 with a 2.5s transition, then remove from state. Fee accumulation is derived from tick minus a stored startTick per mood multiplied by feePerSecond, computed in render rather than stored, to avoid stale state. Clerk responses are selected from a hardcoded array of 8-10 rulings and displayed as a fixed-position 'CLERK WINDOW' overlay panel. New tow-ins animate sliding in from the right via a transition on marginLeft from 120% to 0."
+    }
   }
 ]
