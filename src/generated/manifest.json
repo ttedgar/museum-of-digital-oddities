@@ -1098,5 +1098,43 @@
       "visual_style": "Municipal brutalist — off-white/concrete #E8E4DC background, faded yellow lot-line borders, monospace font throughout, muted orange #C8622A for fees and warnings, institutional blue-gray #4A5568 for headers, red stamp effect for RETURNED TO ATMOSPHERE. Fluorescent flatness, bureaucratic dread.",
       "key_implementation_notes": "Each mood card uses a ref-keyed inline style for the release animation: on release, apply transform translateY(-120vh) and opacity 0 with a 2.5s transition, then remove from state. Fee accumulation is derived from tick minus a stored startTick per mood multiplied by feePerSecond, computed in render rather than stored, to avoid stale state. Clerk responses are selected from a hardcoded array of 8-10 rulings and displayed as a fixed-position 'CLERK WINDOW' overlay panel. New tow-ins animate sliding in from the right via a transition on marginLeft from 120% to 0."
     }
+  },
+  {
+    "date": "2026-05-06",
+    "title": "Last Known Position of Your Confidence",
+    "description": "A search party has been dispatched. The dogs are picking up something near a buffet in 2011.",
+    "idea": "The screen presents an official Search & Rescue operations center for a missing person — except the missing person is the user's confidence, filed as a missing entity report with a last known location, physical description ('medium build, appeared larger in mirrors, spoke first in most rooms until approximately Q3 2016'), and a live field map dotted with search teams. Users can click on search teams deployed to different sectors — 'THE COMPLIMENT YOU DEFLECTED,' 'PERFORMANCE REVIEW ARCHIVE,' 'THE NIGHT YOU DANCED' — each team radios back with field reports using the clipped, exhausted language of real SAR dispatches, describing what they found instead: a cached version of the confidence from 2009 that won't load properly, a partial impression in the carpet where it used to stand, 'signs of recent activity — something was here, it left in a hurry.' The user can authorize an air search, which costs one click and finds nothing but returns a thermal image that is warm in all the wrong places. Eventually a final dispatch comes in: the confidence has been located, but it is refusing to be recovered, and has been observed 'operating independently in a region we cannot reach without your cooperation.' A form asks the user to sign off on closing the case. The checkbox for 'I AM READY' cannot be checked. The checkbox for 'LEAVE IT OPEN' is already checked, and unchecking it just checks it again.",
+    "plan": {
+      "title": "Last Known Position of Your Confidence",
+      "state_variables": [
+        "activeTeam: string|null — which search team radio report is currently displayed",
+        "teamReports: object — map of team id to whether they've been contacted",
+        "airSearchActivated: boolean — whether air search has been deployed",
+        "airSearchComplete: boolean — whether thermal image result is shown",
+        "finalDispatchVisible: boolean — whether the final 'located but refusing recovery' dispatch appears",
+        "leaveItOpenChecked: boolean — always true, toggling re-checks it",
+        "readyChecked: boolean — always false, clicking does nothing",
+        "dispatchLog: string[] — running log of all radio messages received",
+        "currentTime: string — simulated ops center clock ticking in real time",
+        "signalStrength: number — fake fluctuating signal bar value"
+      ],
+      "effects": [
+        "useEffect on mount: start ops clock ticking every second with formatted timestamp",
+        "useEffect on mount: set interval to randomly fluctuate signalStrength between 1-4",
+        "useEffect watching teamReports: when all 4 teams have been contacted, trigger a 3-second delay then set finalDispatchVisible to true and push final dispatch to log",
+        "useEffect watching airSearchActivated: after 2.5s delay set airSearchComplete to true and push thermal report to dispatchLog",
+        "useEffect on leaveItOpenChecked: if it becomes false, immediately set it back to true via setTimeout 0"
+      ],
+      "key_interactions": [
+        "Click search team node on map: sets activeTeam, marks team as contacted, appends clipped SAR-language field report to dispatchLog",
+        "Click AUTHORIZE AIR SEARCH button: sets airSearchActivated, disables button, after delay shows thermal 'image' (ASCII warmth grid) with report",
+        "Click READY checkbox: does nothing visually — no state change, cursor shows not-allowed",
+        "Click LEAVE IT OPEN checkbox: unchecking immediately re-checks via effect, giving a brief flicker",
+        "Click CLOSE CASE REPORT button: disabled until final dispatch visible, then clicking it shows a modal saying the case cannot be closed while the subject is uncooperative",
+        "Hover over missing person description panel: subtle highlight effect on key phrases"
+      ],
+      "visual_style": "Muted olive-green and amber on near-black background. Monospace font throughout. Aesthetic of a 1990s emergency operations terminal — scanlines via repeating-linear-gradient overlay, low-contrast grid lines, blinking cursor elements. Terse bureaucratic coldness masking emotional weight. Map is ASCII/SVG dot grid with labeled sectors.",
+      "key_implementation_notes": "The map is a simple SVG with hardcoded sector regions and clickable team-marker circles positioned absolutely within it, each labeled with their sector name. Field reports are stored as constants with authentic SAR dispatch cadence ('TEAM 4 TO BASE — sector clear, found residue consistent with sustained eye contact, pre-2014 vintage'). The thermal image is a small grid of colored divs (warm oranges/yellows) arranged to vaguely suggest a human silhouette but shifted wrongly to one side. The LEAVE IT OPEN re-check is handled via useEffect with a 0ms timeout to allow the unchecked render to flicker before snapping back, reinforcing the mechanic viscerally."
+    }
   }
 ]
