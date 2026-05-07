@@ -1136,5 +1136,37 @@
       "visual_style": "Muted olive-green and amber on near-black background. Monospace font throughout. Aesthetic of a 1990s emergency operations terminal — scanlines via repeating-linear-gradient overlay, low-contrast grid lines, blinking cursor elements. Terse bureaucratic coldness masking emotional weight. Map is ASCII/SVG dot grid with labeled sectors.",
       "key_implementation_notes": "The map is a simple SVG with hardcoded sector regions and clickable team-marker circles positioned absolutely within it, each labeled with their sector name. Field reports are stored as constants with authentic SAR dispatch cadence ('TEAM 4 TO BASE — sector clear, found residue consistent with sustained eye contact, pre-2014 vintage'). The thermal image is a small grid of colored divs (warm oranges/yellows) arranged to vaguely suggest a human silhouette but shifted wrongly to one side. The LEAVE IT OPEN re-check is handled via useEffect with a 0ms timeout to allow the unchecked render to flicker before snapping back, reinforcing the mechanic viscerally."
     }
+  },
+  {
+    "date": "2026-05-07",
+    "title": "Complaint Choir of Mild Phenomena",
+    "description": "Seventeen grievances about Tuesday light. The kettle has filed separately. Nobody asked the shadow.",
+    "idea": "The screen presents a formal choral score — staves, tempo markings, a conductor's podium — except the choir is composed entirely of minor physical phenomena that have organized to register complaints through song. Each choir member is a small phenomenon: the sound a fluorescent light makes when it is deciding, the specific weight of unopened mail, the way a room feels different after someone leaves it. The user clicks each choir member to hear their complaint rendered as a single line of scrolling musical notation accompanied by an absurdly specific lyric ('I have been almost-flickering since the Garfield administration and no one has filed the paperwork'). When three or more are selected simultaneously, their complaints harmonize into a chord described by the conductor's notes as 'technically a key but emotionally a Tuesday.' The conductor — a small baton-wielding silhouette who never faces the audience — awards the choir a score at the end, always 'PASSABLE, with reservations,' and the phenomena disperse, still humming, back into the corners of the room where phenomena live.",
+    "plan": {
+      "title": "Complaint Choir of Mild Phenomena",
+      "state_variables": [
+        "selectedMembers: Set of selected choir member IDs",
+        "activeComplaints: array of {id, lyric, notePositions} for scrolling notation",
+        "conductorScore: null or 'PASSABLE, with reservations' string (shown at end)",
+        "harmonizing: boolean, true when 3+ selected",
+        "dispersing: boolean, triggers end animation",
+        "chordLabel: string describing the emotional key",
+        "memberPositions: static array of {id, label, x, y, complaint, noteColor} for each phenomenon"
+      ],
+      "effects": [
+        "When selectedMembers size >= 3, set harmonizing true and compute chordLabel from combination",
+        "When dispersing is true, setTimeout to reset all state after 3s animation completes",
+        "Animate scrolling notation lines using requestAnimationFrame on a canvas ref, redrawing when activeComplaints changes",
+        "After 8 seconds of any active selection, auto-trigger conductorScore reveal and dispersing sequence"
+      ],
+      "key_interactions": [
+        "Click choir member silhouette to toggle selection, adding their complaint lyric as a scrolling staff line",
+        "Click conductor podium button to manually trigger final scoring and dispersal",
+        "Hover over choir member shows tooltip with their full absurdist complaint text",
+        "When dispersing, members animate to screen corners with CSS transform transitions via inline style updates"
+      ],
+      "visual_style": "Aged cream parchment background (#f5f0e8), dark sepia ink (#2a1f0e) for staves and notation, muted institutional green (#4a6741) accents. Formal score aesthetic — serif fonts, hairline staff lines, small baton silhouette. Mood: bureaucratic melancholy, the dignity of unacknowledged minor suffering.",
+      "key_implementation_notes": "Draw musical staves and scrolling noteheads on a canvas element using 2D context — five horizontal lines per complaint, with oval noteheads advancing left to right on a loop offset per member. Choir members are absolutely positioned SVG or div silhouettes (abstract blob shapes via border-radius) within a fixed score-layout container mimicking a choral arrangement diagram. Harmonizing state overlays a translucent chord annotation box near the conductor with the 'emotionally a Tuesday' key label. Dispersal uses inline style transform:translate with transition to push each member to randomized corner coordinates, then resets selectedMembers to empty Set."
+    }
   }
 ]
