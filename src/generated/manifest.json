@@ -1168,5 +1168,41 @@
       "visual_style": "Aged cream parchment background (#f5f0e8), dark sepia ink (#2a1f0e) for staves and notation, muted institutional green (#4a6741) accents. Formal score aesthetic — serif fonts, hairline staff lines, small baton silhouette. Mood: bureaucratic melancholy, the dignity of unacknowledged minor suffering.",
       "key_implementation_notes": "Draw musical staves and scrolling noteheads on a canvas element using 2D context — five horizontal lines per complaint, with oval noteheads advancing left to right on a loop offset per member. Choir members are absolutely positioned SVG or div silhouettes (abstract blob shapes via border-radius) within a fixed score-layout container mimicking a choral arrangement diagram. Harmonizing state overlays a translucent chord annotation box near the conductor with the 'emotionally a Tuesday' key label. Dispersal uses inline style transform:translate with transition to push each member to randomized corner coordinates, then resets selectedMembers to empty Set."
     }
+  },
+  {
+    "date": "2026-05-08",
+    "title": "Recall Notice: Your Childhood Sky",
+    "description": "The blue was shipped with an undisclosed substitution. Please return your memories of clouds to the nearest authorized facility.",
+    "idea": "The user receives an official product recall notice — formatted exactly like a Consumer Product Safety Commission alert — informing them that the specific shade of sky blue from their childhood has been recalled due to 'undisclosed chromatic substitution during formative years.' They must click through a series of verification questions to confirm they received the affected sky (Was it mostly seen from a car window? Did it contain at least one cloud shaped like something that wasn't the thing you said it was?), after which a claims representative — exhausted, corporate, clearly having a hard week — walks them through exchanging their corrupted memory for a replacement sky from an approved list. The replacement skies are all wrong in different ways: one is technically accurate but feels like it belongs to someone else, one is the correct color but comes with a disclaimer that 'emotional resonance is not covered under this warranty,' one is just a rectangle of gray marked 'PENDING LITIGATION.' The user can accept a replacement or click 'I WANT MY ORIGINAL SKY' — which opens a grievance escalation form that has been out of service since a date the user cannot quite remember but feels significant.",
+    "plan": {
+      "title": "Recall Notice: Your Childhood Sky",
+      "state_variables": [
+        "phase: string — 'notice'|'verification'|'representative'|'selection'|'grievance' controls current screen",
+        "verificationStep: number — index of current verification question (0-4)",
+        "verificationAnswers: object — stores yes/no answers to each question",
+        "qualified: boolean — whether user passes verification",
+        "selectedReplacement: string|null — which replacement sky was chosen",
+        "repDialogIndex: number — which line of exhausted rep dialogue is showing",
+        "grievanceAttempts: number — how many times user clicked the broken grievance form",
+        "typingComplete: boolean — whether current rep dialogue has finished typing animation"
+      ],
+      "effects": [
+        "Typewriter effect on representative dialogue lines — character-by-character reveal using setInterval, clears on repDialogIndex change",
+        "Blinking cursor effect on active typewriter text using setInterval",
+        "Auto-scroll grievance form error message into view when grievanceAttempts increments"
+      ],
+      "key_interactions": [
+        "Click 'BEGIN VERIFICATION' on notice screen to enter verification phase",
+        "Click YES/NO buttons for each of 5 absurd verification questions about childhood sky exposure",
+        "Click 'CONNECT TO REPRESENTATIVE' after verification to enter rep dialogue phase",
+        "Click 'CONTINUE' to advance through exhausted rep's scripted dialogue lines",
+        "Click each of 3 replacement sky options to preview them (each shows a colored rectangle + warranty disclaimer)",
+        "Click 'ACCEPT REPLACEMENT' to finalize selection with confirmation screen",
+        "Click 'I WANT MY ORIGINAL SKY' to navigate to grievance phase",
+        "Click 'SUBMIT GRIEVANCE' repeatedly on broken form — each attempt shows a different out-of-service error with an increasingly vague date"
+      ],
+      "visual_style": "Stark government document aesthetic — white background, Times New Roman or Georgia serif font, black borders, official red/blue accent stamps. Recall notice header mimics CPSC formatting with case numbers and barcodes (ASCII). Rep section shifts to a slightly warmer off-white with a faint horizontal rule separator. Replacement sky previews are colored rectangles with bureaucratic labels. Overall mood: clinical, melancholy, absurdly official.",
+      "key_implementation_notes": "Each phase renders as a distinct 'document' div with max-width ~680px centered, mimicking printed government forms with padding and borders. The typewriter effect uses useRef to store the interval ID and a local char index, rendering into a useState string. Verification questions are stored as a static array of objects with question text and flavor context. The three replacement skies are hardcoded objects with hex color, name, and warranty disclaimer text — rendered as 200x120px colored divs with overlaid label text. The grievance form's 'last active' date is computed to always display as something slightly off — a useRef stores a fixed nonsense date string chosen from an array on mount so it feels personal but wrong."
+    }
   }
 ]
