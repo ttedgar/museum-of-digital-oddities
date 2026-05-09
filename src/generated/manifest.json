@@ -1204,5 +1204,38 @@
       "visual_style": "Stark government document aesthetic — white background, Times New Roman or Georgia serif font, black borders, official red/blue accent stamps. Recall notice header mimics CPSC formatting with case numbers and barcodes (ASCII). Rep section shifts to a slightly warmer off-white with a faint horizontal rule separator. Replacement sky previews are colored rectangles with bureaucratic labels. Overall mood: clinical, melancholy, absurdly official.",
       "key_implementation_notes": "Each phase renders as a distinct 'document' div with max-width ~680px centered, mimicking printed government forms with padding and borders. The typewriter effect uses useRef to store the interval ID and a local char index, rendering into a useState string. Verification questions are stored as a static array of objects with question text and flavor context. The three replacement skies are hardcoded objects with hex color, name, and warranty disclaimer text — rendered as 200x120px colored divs with overlaid label text. The grievance form's 'last active' date is computed to always display as something slightly off — a useRef stores a fixed nonsense date string chosen from an array on mount so it feels personal but wrong."
     }
+  },
+  {
+    "date": "2026-05-09",
+    "title": "Formal Hearing: The Smell of Rain",
+    "description": "Petrichor has retained counsel. The ground has filed a counter-brief. You are the bailiff and also the rain.",
+    "idea": "The user enters a full courtroom proceeding in which the smell of rain (petrichor) is on trial for 'arriving without announcement and causing unsolicited nostalgia in civilians.' The case has been building for decades. Both the prosecution (a dry afternoon, represented by a very tired attorney) and the defense (the smell itself, which communicates only through poetic exhibits entered into evidence) present arguments the user must rule on as Judge. Each piece of evidence is an object the smell allegedly triggered a memory inside — a specific parking lot, a screen door, a tent in August — and the user must SUSTAIN or OVERRULE each memory as admissible. Sustaining too many causes the courtroom to slowly fill with the smell's described effects: text begins to soften at the edges, fonts grow slightly rounder, the room temperature drops two degrees in the copy. The verdict options are 'GUILTY OF BEAUTY,' 'NOT GUILTY, INSUFFICIENT DRYNESS,' and 'CASE DISMISSED: THE COURT IS ALSO EXPERIENCING IT.' Whatever the user chooses, the smell is immediately re-indicted for a new offense — this time involving the sound of a ceiling fan — and the docket already shows seventeen more cases pending.",
+    "plan": {
+      "title": "Formal Hearing: The Smell of Rain",
+      "state_variables": [
+        "phase: 'intro' | 'trial' | 'verdict' | 'reindicted' — controls which screen is shown",
+        "currentEvidenceIndex: number — tracks which exhibit is being presented",
+        "rulings: array of 'SUSTAIN' | 'OVERRULE' per evidence item",
+        "sustainCount: number — how many memories sustained, drives visual softening",
+        "selectedVerdict: string | null — which of the three verdicts was chosen",
+        "softness: number 0-10 — derived from sustainCount, drives font-weight, blur, border-radius mutations",
+        "showGavel: boolean — brief gavel animation after each ruling",
+        "reindictmentVisible: boolean — triggers final re-indictment reveal"
+      ],
+      "effects": [
+        "When sustainCount changes, recalculate softness (sustainCount / totalEvidence * 10) and apply to document body font smoothing via ref",
+        "When phase changes to 'reindicted', set a timeout to show the docket of 17 pending cases after 2s",
+        "On mount, set a slow ambient tick that slightly pulses the courtroom background opacity every 4s to simulate a breathing room"
+      ],
+      "key_interactions": [
+        "SUSTAIN button: increments sustainCount, pushes 'SUSTAIN' to rulings, advances evidence index or triggers verdict phase",
+        "OVERRULE button: pushes 'OVERRULE' to rulings, advances evidence index",
+        "Three verdict buttons: sets selectedVerdict, transitions to reindicted phase with dramatic delay",
+        "Begin Hearing button on intro screen: transitions to trial phase",
+        "Docket list on reindicted screen: hovering any of the 17 pending cases shows a one-line absurd charge"
+      ],
+      "visual_style": "Muted legal beige and slate — cream #F5F0E8 background, dark charcoal #2C2C2C text, aged gold #B8960C for headings and seals. Typewriter-adjacent serif font via font-family stack. As softness increases: fonts round out via font-weight drop and letter-spacing expand, text-shadow gains a soft blue-grey blur, background shifts toward a cooler #E8EDF5, borders become more rounded. Mood: bureaucratic melancholy dissolving into sensory memory.",
+      "key_implementation_notes": "All visual softening is driven by a single 'softness' scalar (0–10) interpolated inline into every text element's style — blur via textShadow, roundness via borderRadius on containers, warmth via background color lerp between beige and cool blue-grey. Evidence items are a hardcoded array of objects with 'exhibit', 'object', 'alleged memory', and 'prosecution objection' fields. Verdict phase renders all three options as large formal buttons with official-sounding legal language; after selection a typewriter-style reveal shows the re-indictment charge and then fades in the full docket list. No external fonts — use Georgia, 'Times New Roman', serif stack throughout."
+    }
   }
 ]
