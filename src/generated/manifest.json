@@ -1237,5 +1237,37 @@
       "visual_style": "Muted legal beige and slate — cream #F5F0E8 background, dark charcoal #2C2C2C text, aged gold #B8960C for headings and seals. Typewriter-adjacent serif font via font-family stack. As softness increases: fonts round out via font-weight drop and letter-spacing expand, text-shadow gains a soft blue-grey blur, background shifts toward a cooler #E8EDF5, borders become more rounded. Mood: bureaucratic melancholy dissolving into sensory memory.",
       "key_implementation_notes": "All visual softening is driven by a single 'softness' scalar (0–10) interpolated inline into every text element's style — blur via textShadow, roundness via borderRadius on containers, warmth via background color lerp between beige and cool blue-grey. Evidence items are a hardcoded array of objects with 'exhibit', 'object', 'alleged memory', and 'prosecution objection' fields. Verdict phase renders all three options as large formal buttons with official-sounding legal language; after selection a typewriter-style reveal shows the re-indictment charge and then fades in the full docket list. No external fonts — use Georgia, 'Times New Roman', serif stack throughout."
     }
+  },
+  {
+    "date": "2026-05-10",
+    "title": "Taxonomy of Your Hovering Hand",
+    "description": "The hand arrived before the decision. The hand has opinions about the door. The hand is still technically above the bowl.",
+    "idea": "The screen is a formal scientific field guide — illustrated plates, Latin binomials, habitat notes — but it is cataloguing the user's cursor in real time as a previously undiscovered species of hovering hand. Every time the cursor pauses over something without clicking, a new specimen entry generates: the genus and species name constructed from where it hovered and for how long ('Manus indecisus, var. buttonus-adjacentis'), a behavioral note in the dry rapturous prose of a Victorian naturalist ('observed lingering at the boundary of commitment for 3.4 seconds — a new record for this habitat'), and a small illustrated plate of the exact hover position rendered as a naturalist's ink drawing. When the user finally clicks something, the guide marks that specimen EXTINCT — 'the hover, once resolved, cannot be recovered' — and files it in an Appendix of Concluded Hesitations. The longer the user refuses to click anything, the more elaborate and reverent the entries become, until the guide is treating a single motionless cursor as the greatest biological discovery of the century, publishing findings, naming a subspecies after the specific pixel it hasn't left.",
+    "plan": {
+      "title": "Taxonomy of Your Hovering Hand",
+      "state_variables": [
+        "specimens: array of specimen objects {id, genus, species, variant, hoverTarget, duration, x, y, timestamp, extinct, behavioralNote, plateStyle}",
+        "currentHover: {x, y, startTime, targetDesc} or null — tracks active hover",
+        "activeDuration: number — live seconds of current hover",
+        "totalHoversWithoutClick: number — escalates reverence level",
+        "appendix: array of extinct specimens",
+        "selectedSpecimen: id or null — for detail view",
+        "cursorPos: {x, y} — raw cursor position for live plate rendering"
+      ],
+      "effects": [
+        "useEffect on mousemove: update cursorPos and currentHover startTime/targetDesc when cursor settles (debounce ~400ms to detect 'pause')",
+        "useEffect interval (100ms): if currentHover active, update activeDuration = (now - startTime)/1000; at thresholds (2s, 5s, 10s, 20s, 60s) trigger new specimen generation or escalate existing entry's behavioral note",
+        "useEffect on specimens length: if totalHoversWithoutClick > 5, upgrade prose register to increasingly reverent/hyperbolic Victorian tone"
+      ],
+      "key_interactions": [
+        "mousemove: track cursor position, detect hover pause via debounce, generate specimen entry after ~1.5s of stillness",
+        "mouseenter on any interactive element: annotate targetDesc with element type for species name construction",
+        "click anywhere: mark currentHover specimen as EXTINCT, move to appendix, increment click counter, show brief extinction notice overlay",
+        "click specimen card: expand to full detail view with larger illustrated plate and full behavioral notes",
+        "hover over appendix entry: show ghost/faded re-illustration with 'the hover, once resolved, cannot be recovered'"
+      ],
+      "visual_style": "Aged parchment (#f5eedc) background, sepia ink (#3b2a1a) text, cream panels with subtle vignette borders. Serif fonts simulated via font-family Georgia. Field guide plate frames with double-rule borders. Ink-sketch cursor illustrations drawn on canvas elements using bezier curves. Muted olive and rust accent colors. Dense, typeset Victorian layout with small-caps labels, em-dashes, italicized Latin binomials. Extinct entries rendered in faded gray with a red EXTINCT stamp overlay.",
+      "key_implementation_notes": "Each specimen's 'illustrated plate' is a small canvas (120x120) drawn procedurally: a stylized hand outline using bezier paths in sepia ink, positioned relative to hover coordinates normalized to plate space, with cross-hatch shading density proportional to hover duration. Species names are constructed by combining a genus from hover-region vocabulary (Manus, Digitus, Cursor) with a species epithet derived from targetDesc and duration buckets. Behavioral note prose escalates through 5 reverence tiers stored as template arrays, selected by totalHoversWithoutClick. The debounce for hover detection uses useRef for the timeout ID to avoid stale closure issues, and targetDesc is inferred from document.elementFromPoint at pause moment."
+    }
   }
 ]
