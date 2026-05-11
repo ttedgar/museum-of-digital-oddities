@@ -1269,5 +1269,45 @@
       "visual_style": "Aged parchment (#f5eedc) background, sepia ink (#3b2a1a) text, cream panels with subtle vignette borders. Serif fonts simulated via font-family Georgia. Field guide plate frames with double-rule borders. Ink-sketch cursor illustrations drawn on canvas elements using bezier curves. Muted olive and rust accent colors. Dense, typeset Victorian layout with small-caps labels, em-dashes, italicized Latin binomials. Extinct entries rendered in faded gray with a red EXTINCT stamp overlay.",
       "key_implementation_notes": "Each specimen's 'illustrated plate' is a small canvas (120x120) drawn procedurally: a stylized hand outline using bezier paths in sepia ink, positioned relative to hover coordinates normalized to plate space, with cross-hatch shading density proportional to hover duration. Species names are constructed by combining a genus from hover-region vocabulary (Manus, Digitus, Cursor) with a species epithet derived from targetDesc and duration buckets. Behavioral note prose escalates through 5 reverence tiers stored as template arrays, selected by totalHoversWithoutClick. The debounce for hover detection uses useRef for the timeout ID to avoid stale closure issues, and targetDesc is inferred from document.elementFromPoint at pause moment."
     }
+  },
+  {
+    "date": "2026-05-11",
+    "title": "Swim Meet Results: Your Thoughts",
+    "description": "Eight lanes. Chlorine smell optional. The thought about the email came in third, which surprised everyone including the email.",
+    "idea": "The screen presents official competitive swim meet results — lane assignments, split times, heat brackets, a scoreboard with a malfunctioning digit — except every competitor is a thought the user is currently having. The user types a thought (or accepts randomly generated ones like 'whether the noise the fridge makes is normal' and 'the face from the dream') and it gets seeded into a heat bracket against other thoughts, assigned a lane, and given a full athletic profile: personal best time, country of origin ('arose during a Tuesday commute, 2021'), and a coach's pre-race quote. A race animation plays — lane markers, a starting pistol, a commentator's transcript scrolling breathlessly — with split times revealing how quickly each thought 'moved through the body.' The thought about something embarrassing always false-starts. The thought the user has been avoiding qualifies for finals but scratches at the last minute citing 'a recurring hamstring issue.' The podium ceremony is deeply sincere, with a tiny medal ceremony graphic and an anthem that is described but never plays. A final results PDF is 'available for download' but the button only ever says 'Generating...' and the thought in first place quietly changes each time you look away.",
+    "plan": {
+      "title": "Swim Meet Results: Your Thoughts",
+      "state_variables": [
+        "thoughts: array of thought objects with name, lane, splitTimes, personalBest, origin, coachQuote, country, specialBehavior",
+        "inputValue: string for new thought entry",
+        "racePhase: 'seeding'|'starting'|'racing'|'results'|'podium'",
+        "raceProgress: 0-100 number driving animation",
+        "commentaryLog: array of strings scrolling during race",
+        "heatBracket: array of thought objects assigned to current heat",
+        "scoreboard: array of {thought, finalTime, place} sorted results",
+        "malfunctionDigit: which digit index is glitching on scoreboard",
+        "firstPlace: index into scoreboard that quietly rotates",
+        "pdfStatus: 'idle'|'generating' for the forever-button",
+        "startingPistolFired: boolean for false-start logic",
+        "falseStartThought: string name of thought that false-starts"
+      ],
+      "effects": [
+        "useEffect on racePhase==='racing': runs interval incrementing raceProgress 0->100 over ~4s, then sets phase to 'results'",
+        "useEffect on raceProgress: appends breathless commentary strings to commentaryLog at thresholds (25,50,75,90,100)",
+        "useEffect on racePhase==='results': after 2s delay sets phase to 'podium', also starts malfunctionDigit interval cycling a random digit",
+        "useEffect on racePhase==='podium': sets interval every 3s that silently rotates firstPlace index by 1",
+        "useEffect on mount: seeds 3-4 default thoughts from a hardcoded pool of absurdist options"
+      ],
+      "key_interactions": [
+        "Type and submit a custom thought to add it to the pool, triggering seeding animation",
+        "Click 'Start Heat' to assign lanes 1-8, generate split times, trigger starting pistol sequence with false-start for embarrassing thought",
+        "Race animation progresses automatically; avoiding-thought scratches at 60% progress with hamstring message injected into commentary",
+        "Scoreboard hover reveals coach pre-race quote tooltip per lane",
+        "PDF download button always enters 'Generating...' state and never resolves",
+        "Podium view shows medal ceremony graphic with anthem described in italics parenthetical; first place name changes on each re-render tick"
+      ],
+      "visual_style": "Institutional aquatics center aesthetic: deep navy and lane-rope cyan/yellow, white scoreboard digits with one flickering red, stark monospace fonts for times and splits, muted chlorine-green tint overlay, official-document seriousness undercut by absurdist content, dense tabular data layouts",
+      "key_implementation_notes": "Use useRef for the raceInterval and malfunctionInterval to allow proper cleanup. Split times are generated via seeded pseudo-random math using thought name char codes so they're deterministic per thought. The firstPlace rotation uses a ref-tracked counter mod scoreboard.length to silently update state without user-triggered events. False-start is detected by checking if the racing thought's specialBehavior==='embarrassing' and injecting a DQ notice at raceProgress===10 with a 0.8s delay before re-start sequence."
+    }
   }
 ]
