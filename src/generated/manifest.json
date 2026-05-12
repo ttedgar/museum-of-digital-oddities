@@ -1309,5 +1309,39 @@
       "visual_style": "Institutional aquatics center aesthetic: deep navy and lane-rope cyan/yellow, white scoreboard digits with one flickering red, stark monospace fonts for times and splits, muted chlorine-green tint overlay, official-document seriousness undercut by absurdist content, dense tabular data layouts",
       "key_implementation_notes": "Use useRef for the raceInterval and malfunctionInterval to allow proper cleanup. Split times are generated via seeded pseudo-random math using thought name char codes so they're deterministic per thought. The firstPlace rotation uses a ref-tracked counter mod scoreboard.length to silently update state without user-triggered events. False-start is detected by checking if the racing thought's specialBehavior==='embarrassing' and injecting a DQ notice at raceProgress===10 with a 0.8s delay before re-start sequence."
     }
+  },
+  {
+    "date": "2026-05-12",
+    "title": "Lost & Found: Your Future Selves",
+    "description": "Seven versions of you are waiting on a bench. They all have the wrong coat. The coat is yours.",
+    "idea": "The screen presents a municipal Lost & Found office counter, complete with a number-ticket dispenser and a backroom of tagged items — except every lost item is a future version of the user, checked in by someone who found them wandering and couldn't identify the owner. Each 'item' has a claim tag: a physical description ('slightly worn around the certainty, smells faintly of a decision not yet made'), a found location ('outside a conversation that hadn't started yet'), and a condition report. The user must click through each unclaimed future self and decide: CLAIM IT, DONATE IT, or mark it ABANDONED PROPERTY. Claiming causes the future self to stand up, look directly at the user through the counter window, and say one sentence — something between a warning and a weather report — before dissolving. Donating sends it to a thrift store whose address is just a feeling. Each choice causes a new future self to be checked in at the back counter, found somewhere slightly closer than the last one, until the final item tag reads: found here, just now, holding this mouse.",
+    "plan": {
+      "title": "Lost & Found: Your Future Selves",
+      "state_variables": [
+        "tickets: array of 7 future-self objects with tag data (description, foundLocation, condition, sentence)",
+        "currentIndex: which future self is being viewed (0-6)",
+        "disposition: object mapping index to 'claimed'|'donated'|'abandoned'",
+        "activeAction: null|'claiming'|'donating' for animation state",
+        "claimedSentence: string shown when a future self is claimed",
+        "ticketNumber: current dispensed number (starts at 847, increments)",
+        "allResolved: boolean when all 7 have been processed",
+        "foundDistance: tracks how close each new check-in location is"
+      ],
+      "effects": [
+        "useEffect on activeAction: when 'claiming', show sentence for 2.5s then dissolve and advance",
+        "useEffect on currentIndex: generate new check-in entry with progressively closer found location",
+        "useEffect on allResolved: trigger final reveal sequence with special last tag"
+      ],
+      "key_interactions": [
+        "Pull ticket from dispenser on load to begin",
+        "Click CLAIM IT — future self stands up, makes eye contact, delivers one sentence, dissolves",
+        "Click DONATE IT — item slides away to thrift store address (a feeling), advances",
+        "Click ABANDONED PROPERTY — stamp animation, item filed, advances",
+        "Cycle through all 7 with each choice spawning a new check-in closer than the last",
+        "Final item (index 6) has special tag: found here, just now, holding this mouse"
+      ],
+      "visual_style": "Institutional beige and olive drab, fluorescent-white background, bureaucratic serif fonts, muted sage green counter surface, manila tag yellow for claim cards, red rubber-stamp aesthetic for disposition marks, slightly melancholy DMV energy",
+      "key_implementation_notes": "Each future-self object is hardcoded with poetic tag copy; the 'claiming' animation uses a CSS-in-JS opacity/transform transition via inline style toggling between states. The counter window effect is achieved with a thick-bordered div that simulates a glass partition. Found locations grow progressively more intimate across the 7 items using a predefined array that ends with 'here, just now, holding this mouse' — no randomness needed. Disposition stamps use absolute-positioned rotated text overlays with red color to simulate rubber stamp marks."
+    }
   }
 ]
