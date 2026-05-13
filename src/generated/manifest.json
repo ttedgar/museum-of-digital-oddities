@@ -1343,5 +1343,42 @@
       "visual_style": "Institutional beige and olive drab, fluorescent-white background, bureaucratic serif fonts, muted sage green counter surface, manila tag yellow for claim cards, red rubber-stamp aesthetic for disposition marks, slightly melancholy DMV energy",
       "key_implementation_notes": "Each future-self object is hardcoded with poetic tag copy; the 'claiming' animation uses a CSS-in-JS opacity/transform transition via inline style toggling between states. The counter window effect is achieved with a thick-bordered div that simulates a glass partition. Found locations grow progressively more intimate across the 7 items using a predefined array that ends with 'here, just now, holding this mouse' — no randomness needed. Disposition stamps use absolute-positioned rotated text overlays with red color to simulate rubber stamp marks."
     }
+  },
+  {
+    "date": "2026-05-13",
+    "title": "Formal Inspection: Your Held Breath",
+    "description": "A clipboard arrives. The clipboard has opinions. The held breath has been cited before.",
+    "idea": "The user is presented with an OSHA-style workplace safety inspection interface, except the worksite being inspected is the space inside their chest right now. An inspector — humorless, thorough, deeply invested in compliance — works through a checklist of violations found in the user's current held breath: improper tension storage, unlicensed anxiety load-bearing, a ribcage that has been operating 14% above permitted capacity since an unspecified Tuesday. The user can click to 'contest' each violation, which causes the inspector to produce additional photographic evidence (clinical diagrams of the violation, labeled with parts that don't exist anatomically but feel accurate). After all violations are logged, the inspector recommends either 'controlled release under supervision' or 'continued hold pending further review' — but both options trigger an immediate re-inspection, because the act of deciding is itself a new violation. A running COMPLIANCE SCORE ticks downward throughout. The final report is stamped CONDITIONALLY OCCUPIED and filed under the user's name in a cabinet that, according to footnote 7(c), 'cannot be located at this time.'",
+    "plan": {
+      "title": "Formal Inspection: Your Held Breath",
+      "state_variables": [
+        "violations: array of violation objects with id, code, description, severity, contested, evidence shown",
+        "complianceScore: number starting at 100, ticks down as violations are logged",
+        "inspectionPhase: string — 'arriving' | 'inspecting' | 'reviewing' | 'recommending' | 'filing' | 'reinspecting'",
+        "currentViolationIndex: number tracking which violation is being actively logged",
+        "contestedEvidenceId: number|null — which violation's evidence diagram is currently showing",
+        "recommendation: string|null — 'release' or 'hold'",
+        "inspectorTyping: boolean — whether the typewriter effect is running",
+        "displayedText: string — current typewriter buffer for inspector remarks",
+        "tickInterval: ref to interval for compliance score ticker",
+        "userName: string — collected via a single input at start, defaults to 'OCCUPANT'"
+      ],
+      "effects": [
+        "On inspectionPhase change to 'inspecting', start a staggered interval that reveals violations one by one every 2.5s, decrementing complianceScore by violation.penalty each time",
+        "Typewriter effect: when inspector remark text changes, animate displayedText character by character using setInterval",
+        "When all violations are logged, after 2s delay transition to 'recommending' phase",
+        "When recommendation is chosen, after 1.5s transition to 'filing' then after 2s back to 'reinspecting' which resets violations to a new set and restarts the score drop from wherever it left off"
+      ],
+      "key_interactions": [
+        "Name input field at start — user types their name before inspection begins",
+        "BEGIN INSPECTION button — triggers arriving animation then starts violation logging",
+        "CONTEST button on each logged violation — sets contestedEvidenceId, reveals anatomical evidence diagram with labeled fake body parts",
+        "DISMISS EVIDENCE button — hides the diagram overlay",
+        "CONTROLLED RELEASE and CONTINUED HOLD buttons — both trigger re-inspection loop with a new violation citing 'decisional act performed without permit'",
+        "Hovering violation rows highlights them in a faint red, showing severity badge"
+      ],
+      "visual_style": "Bureaucratic beige and institutional gray with red VIOLATION stamps. Monospace font throughout. Clipboard-tan background (#F5F0E8). Deep charcoal text. Red accent (#CC2200) for violations and stamps. Thin black borders everywhere. Feels like a government form printed in 1987. Dense, humorless layout with form fields, checkboxes, reference codes.",
+      "key_implementation_notes": "Violations are hardcoded as a pool of ~10 objects with codes like 'CFR 29.BREATH.4(a)', descriptions referencing unlicensed emotional load-bearing and improper thoracic tension storage — rotate/shuffle on re-inspection. Evidence diagrams are pure SVG rendered inline, showing labeled outlines of a chest cavity with invented anatomical labels like 'tertiary worry duct' and 'unsanctioned sternum pressure node'. The compliance score uses a ref-backed interval that accelerates slightly each re-inspection cycle. The CONDITIONALLY OCCUPIED stamp at the end is a rotated red rectangle with bold text overlaid on the final report, and footnote 7(c) appears in 8px text at the very bottom referencing the unfindable cabinet."
+    }
   }
 ]
