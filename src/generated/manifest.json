@@ -1380,5 +1380,39 @@
       "visual_style": "Bureaucratic beige and institutional gray with red VIOLATION stamps. Monospace font throughout. Clipboard-tan background (#F5F0E8). Deep charcoal text. Red accent (#CC2200) for violations and stamps. Thin black borders everywhere. Feels like a government form printed in 1987. Dense, humorless layout with form fields, checkboxes, reference codes.",
       "key_implementation_notes": "Violations are hardcoded as a pool of ~10 objects with codes like 'CFR 29.BREATH.4(a)', descriptions referencing unlicensed emotional load-bearing and improper thoracic tension storage — rotate/shuffle on re-inspection. Evidence diagrams are pure SVG rendered inline, showing labeled outlines of a chest cavity with invented anatomical labels like 'tertiary worry duct' and 'unsanctioned sternum pressure node'. The compliance score uses a ref-backed interval that accelerates slightly each re-inspection cycle. The CONDITIONALLY OCCUPIED stamp at the end is a rotated red rectangle with bold text overlaid on the final report, and footnote 7(c) appears in 8px text at the very bottom referencing the unfindable cabinet."
     }
+  },
+  {
+    "date": "2026-05-14",
+    "title": "Departure Board for Abandoned Hobbies",
+    "description": "The ukulele is boarding. The ukulele has always been boarding. Gate: Someday.",
+    "idea": "The screen is a classic airport/train station departure board — the kind with the satisfying flip-tile animation — but every destination is a hobby the user once started and quietly stopped. Watercolor painting, sourdough, the guitar, learning Portuguese, 'that thing with the candles.' Each row shows STATUS ('DELAYED since 2019'), GATE ('Enthusiasm, now closed'), and a REASON FOR DELAY that updates on a cycle of bureaucratic non-answers ('awaiting momentum,' 'gate agent has not arrived and may not,' 'passenger repeatedly rebooked but not reboarded'). The user can click any row to 'check in' for that flight, which triggers a brief, sincere gate announcement describing what boarding would feel like — the exact specific texture of returning — before the board flips and reclassifies the flight as CANCELLED DUE TO WEATHER (the weather is described as 'a general ambient reasonableness'). A new hobby the user has never tried appears at the bottom of the board, status NOW BOARDING, gate STILL TIME, and the countdown clock reads a number that decreases only when the user isn't looking at it.",
+    "plan": {
+      "title": "Departure Board for Abandoned Hobbies",
+      "state_variables": [
+        "hobbies: array of hobby objects with fields {id, name, status, gate, reason, delayYear, checkedIn, cancelled}",
+        "activeAnnouncement: string or null — the gate announcement text shown when a row is clicked",
+        "announcementHobbyId: id of hobby currently being announced",
+        "newHobby: object — the NOW BOARDING hobby at the bottom",
+        "countdown: number — seconds on the countdown clock for new hobby",
+        "isTabVisible: boolean — tracks page visibility for countdown behavior",
+        "flipStates: object map of hobbyId to boolean — triggers flip animation per cell",
+        "reasonIndex: object map of hobbyId to number — cycles through delay reasons"
+      ],
+      "effects": [
+        "useEffect on mount: initialize hobbies array and newHobby from hardcoded data",
+        "useEffect cycling reasons: setInterval every 4s to increment reasonIndex for each hobby, trigger flipStates for that row's reason cell",
+        "useEffect for countdown: setInterval every 1s that ONLY decrements countdown when document.hidden is true (user not looking), using visibilitychange event to track isTabVisible",
+        "useEffect for announcement timeout: when activeAnnouncement is set, after 4s flip the hobby's status to CANCELLED and clear announcement",
+        "useEffect visibilitychange listener: add/remove document visibilitychange event to set isTabVisible"
+      ],
+      "key_interactions": [
+        "Click a hobby row: set activeAnnouncement to that hobby's bespoke boarding description text, set announcementHobbyId, trigger row flip animation",
+        "After announcement delay (~4s): flip hobby status to CANCELLED, update gate to 'closed due to weather (general ambient reasonableness)', trigger flip animation on status cell",
+        "Countdown display: shows current countdown value, visually pulses when tab is re-focused to show it decreased while away",
+        "Hover on row: subtle highlight to indicate clickability, cursor pointer"
+      ],
+      "visual_style": "Classic split-flap departure board aesthetic — near-black background (#0a0a0a), amber/yellow text (#f5c518) on dark panels, monospace font (Courier New or similar), each cell has a slight border/inset shadow suggesting physical tile panels. Announcement overlay is a warm off-white card center-screen with a softer serif-ish font, sincere and quiet. Overall mood: melancholy bureaucratic nostalgia with a gentle humor.",
+      "key_implementation_notes": "Flip animation is CSS-based via inline style keyframes injected into a style tag via useEffect on mount — each cell animates a rotateX 90deg→0deg transform with a brief mid-point color flash to simulate the tile flip. Reasons cycle through a hardcoded pool of 6-8 bureaucratic strings per hobby row independently. The countdown decrement-while-hidden logic uses document.hidden in a setInterval rather than the visibilitychange event directly, keeping the illusion clean. Each hobby has a unique bespoke announcement string written inline in the data — specific sensory detail (smell of the sourdough starter, callus on the fingertip) to earn the emotional beat before the cancellation."
+    }
   }
 ]
