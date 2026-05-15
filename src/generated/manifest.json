@@ -1414,5 +1414,44 @@
       "visual_style": "Classic split-flap departure board aesthetic — near-black background (#0a0a0a), amber/yellow text (#f5c518) on dark panels, monospace font (Courier New or similar), each cell has a slight border/inset shadow suggesting physical tile panels. Announcement overlay is a warm off-white card center-screen with a softer serif-ish font, sincere and quiet. Overall mood: melancholy bureaucratic nostalgia with a gentle humor.",
       "key_implementation_notes": "Flip animation is CSS-based via inline style keyframes injected into a style tag via useEffect on mount — each cell animates a rotateX 90deg→0deg transform with a brief mid-point color flash to simulate the tile flip. Reasons cycle through a hardcoded pool of 6-8 bureaucratic strings per hobby row independently. The countdown decrement-while-hidden logic uses document.hidden in a setInterval rather than the visibilitychange event directly, keeping the illusion clean. Each hobby has a unique bespoke announcement string written inline in the data — specific sensory detail (smell of the sourdough starter, callus on the fingertip) to earn the emotional beat before the cancellation."
     }
+  },
+  {
+    "date": "2026-05-15",
+    "title": "Hearing Aid for Dead Stars",
+    "description": "The light arrived. The sender is no longer available. Press any key to acknowledge a universe that did not wait.",
+    "idea": "The screen shows a deep-space radio telescope interface receiving transmissions from stars that no longer exist — each signal is a mundane audio message from a civilization that burned out before the message arrived. The user operates as a lone radio technician who must 'process' each incoming transmission: a bureaucratic intake form asks them to classify the signal's emotional content, assign it a ticket number, and decide its disposition (ARCHIVE, FORWARD TO WHOM IT MAY CONCERN, or PLAY IT AGAIN). Each message is rendered as scrolling waveform text — not mysterious alien language but achingly domestic content: a reminder about dinner, someone laughing at something small, a long silence with ambient background noise that sounds like home. The interface insists the technician maintain a processing queue and warns of backlog, but new signals arrive faster than they can be handled, each one older than the last, each one from further away, each one more casually, heartbreakingly alive. The final incoming signal in the queue is listed as originating 0.0 light-seconds away, timestamp: just now, and the waveform is the sound of the user sitting quietly in their chair.",
+    "plan": {
+      "title": "Hearing Aid for Dead Stars",
+      "state_variables": [
+        "queue: array of signal objects (id, origin, lightYears, timestamp, content, emotional, disposition, processed)",
+        "activeSignal: currently open signal object or null",
+        "ticketCounter: incrementing ticket number int",
+        "backlogWarning: boolean for warning flash state",
+        "waveformOffset: number for scrolling waveform animation",
+        "newSignalTimer: number tracking time since last arrival",
+        "emotionalTag: string for current form selection",
+        "dispositionChoice: string for current form selection",
+        "finalSignalUnlocked: boolean — true when queue length exceeds threshold",
+        "processingCount: number of processed signals",
+        "warningLevel: 0-3 escalating urgency"
+      ],
+      "effects": [
+        "useEffect on mount: seed initial queue with 5 signals, start interval that pushes new signals every 8-12 seconds (randomized), escalating to every 4 seconds after 3 processed",
+        "useEffect on queue length: trigger backlogWarning flash if unprocessed count > 4",
+        "useEffect on processingCount: when >= 7, inject the final 0.0 light-seconds signal as next arrival",
+        "useEffect on waveformOffset: requestAnimationFrame loop that increments offset for scrolling waveform text when activeSignal is open",
+        "useEffect on activeSignal: reset emotionalTag and dispositionChoice to empty strings"
+      ],
+      "key_interactions": [
+        "Click signal row in queue to open intake form — populates activeSignal",
+        "Select emotional content tag from dropdown (MUNDANE JOY / AMBIENT GRIEF / UNCLASSIFIED WARMTH / ROUTINE / SILENCE)",
+        "Select disposition radio: ARCHIVE / FORWARD TO WHOM IT MAY CONCERN / PLAY IT AGAIN",
+        "Submit form: assigns ticket number, marks processed, closes form, returns to queue — PLAY IT AGAIN re-queues signal at bottom",
+        "Press any key when no activeSignal: triggers a brief screen-wide pulse and increments a silent acknowledgment counter shown in corner",
+        "Final signal interaction: form submission disabled, only a single button reads ACKNOWLEDGE — clicking fades interface to near-black with one line of white text"
+      ],
+      "visual_style": "Deep black background (#080808), phosphor green (#00ff88) for primary text and waveform, dim amber (#c8922a) for warnings and backlog alerts, monospace font throughout, CRT scanline texture via repeating linear-gradient overlay, low-opacity grid lines suggesting radio graph paper, overall aesthetic: 1970s NASA mission control meets grief",
+      "key_implementation_notes": "Waveform rendered as a single long string of ASCII amplitude characters (e.g. '▁▂▃▅▆▄▂▁ dinner is ready ▁▂▁ are you coming ▃▄▃▁') scrolled horizontally via transform translateX using waveformOffset — loop it by resetting offset when it exceeds string pixel width calculated via ref. Signal content strings are pre-authored domestic vignettes stored in a static array, selected randomly on signal generation. The final signal's waveform content string is 'a long pause . . . the sound of someone reading . . . breathing . . . the hum of a screen . . . you . . . here . . . now' and its origin field reads '0.0 light-seconds — local — this room'. Backlog warning uses a CSS keyframe-equivalent via setInterval toggling a boolean to flash amber border on queue panel."
+    }
   }
 ]
