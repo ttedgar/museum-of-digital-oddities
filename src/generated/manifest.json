@@ -1453,5 +1453,35 @@
       "visual_style": "Deep black background (#080808), phosphor green (#00ff88) for primary text and waveform, dim amber (#c8922a) for warnings and backlog alerts, monospace font throughout, CRT scanline texture via repeating linear-gradient overlay, low-opacity grid lines suggesting radio graph paper, overall aesthetic: 1970s NASA mission control meets grief",
       "key_implementation_notes": "Waveform rendered as a single long string of ASCII amplitude characters (e.g. '▁▂▃▅▆▄▂▁ dinner is ready ▁▂▁ are you coming ▃▄▃▁') scrolled horizontally via transform translateX using waveformOffset — loop it by resetting offset when it exceeds string pixel width calculated via ref. Signal content strings are pre-authored domestic vignettes stored in a static array, selected randomly on signal generation. The final signal's waveform content string is 'a long pause . . . the sound of someone reading . . . breathing . . . the hum of a screen . . . you . . . here . . . now' and its origin field reads '0.0 light-seconds — local — this room'. Backlog warning uses a CSS keyframe-equivalent via setInterval toggling a boolean to flash amber border on queue panel."
     }
+  },
+  {
+    "date": "2026-05-16",
+    "title": "Interpreter for Your Childhood Bedroom",
+    "description": "The window remembers a frequency. The carpet holds a deposition. You are asked to sign nothing, which is the most suspicious part.",
+    "idea": "The user is presented with a formal architectural interpreter's report — the kind used in real estate disputes or historic preservation cases — except the subject is their childhood bedroom, reconstructed from a series of intake questions that are completely wrong ('Was the ceiling height consistent with ambition?' 'Did the door lock from the inside, the outside, or from a feeling?'). Based on their answers, the report generates an official floor plan annotated with findings: the corner where dread pooled due to 'insufficient egress from imagination,' a window cited for 'admitting too much Tuesday,' a closet flagged as load-bearing in ways that are not structural. The user can click any annotated zone to trigger an interpreter's note — written in the hedged, passive-voice legalese of a building surveyor who has seen too much — describing what that space 'meant to do' versus 'what it actually did to you.' The final page of the report is a valuation. The bedroom is assessed at a specific dollar amount in a currency called THEN, which the report notes 'cannot be converted, only carried.'",
+    "plan": {
+      "title": "Interpreter for Your Childhood Bedroom",
+      "state_variables": [
+        "phase: 'intake' | 'generating' | 'report' — current view",
+        "answers: object mapping questionId to selected answer string",
+        "currentQuestion: number index into intake questions array",
+        "activeZone: string | null — which floor plan zone is currently selected",
+        "reportData: object with generated findings, valuation, zone annotations derived from answers",
+        "generatingStep: number for fake generation progress animation"
+      ],
+      "effects": [
+        "When phase becomes 'generating', run a timed sequence (setInterval) incrementing generatingStep through ~6 bureaucratic status messages, then set phase to 'report' and derive reportData from answers",
+        "When activeZone changes to non-null, no scroll effect needed — panel appears inline below floor plan"
+      ],
+      "key_interactions": [
+        "Intake: user clicks one of 3-4 absurd multiple-choice answers per question, advancing through 6-7 questions total",
+        "Final intake question has a 'Submit for Assessment' button that triggers generating phase",
+        "Report floor plan: click any annotated zone (corner, window, closet, door, center) to select it and reveal the interpreter's note panel",
+        "Interpreter note panel shows 'intended function' vs 'actual effect' in legalese, dismissible by clicking elsewhere or an X",
+        "Final valuation section at bottom of report is always visible, showing THEN currency amount derived from answer combination"
+      ],
+      "visual_style": "Aged government document aesthetic — off-white/cream background (#F5F0E8), dark ink (#1A1A2E), muted red stamps (#8B1A1A), monospace font for report body, serif for headers. Floor plan rendered as SVG with thin architectural lines, hatching patterns via SVG patterns, annotation markers as circled numbers. Feels like a real estate appraisal from 1987 that has been photocopied too many times.",
+      "key_implementation_notes": "Floor plan is a hardcoded SVG with 5-6 clickable zones (rect/polygon elements with onClick), each zone gets a unique annotation derived by mapping answer combinations to pre-written legalese strings stored in a lookup object. reportData is computed synchronously from answers using a deterministic mapping — no randomness, answers fully determine output so the report feels 'real.' All intake questions and their answer options, all zone annotation texts, and all interpreter notes are stored as static data arrays inside the component. The THEN valuation is computed as a sum of numeric weights assigned to each answer, formatted with commas and always ending in a specific denomination like '14,880 THEN' — never round, always slightly wrong."
+    }
   }
 ]
