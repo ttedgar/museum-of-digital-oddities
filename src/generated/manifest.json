@@ -1483,5 +1483,41 @@
       "visual_style": "Aged government document aesthetic — off-white/cream background (#F5F0E8), dark ink (#1A1A2E), muted red stamps (#8B1A1A), monospace font for report body, serif for headers. Floor plan rendered as SVG with thin architectural lines, hatching patterns via SVG patterns, annotation markers as circled numbers. Feels like a real estate appraisal from 1987 that has been photocopied too many times.",
       "key_implementation_notes": "Floor plan is a hardcoded SVG with 5-6 clickable zones (rect/polygon elements with onClick), each zone gets a unique annotation derived by mapping answer combinations to pre-written legalese strings stored in a lookup object. reportData is computed synchronously from answers using a deterministic mapping — no randomness, answers fully determine output so the report feels 'real.' All intake questions and their answer options, all zone annotation texts, and all interpreter notes are stored as static data arrays inside the component. The THEN valuation is computed as a sum of numeric weights assigned to each answer, formatted with commas and always ending in a specific denomination like '14,880 THEN' — never round, always slightly wrong."
     }
+  },
+  {
+    "date": "2026-05-17",
+    "title": "Customs Declaration: What You Brought Back",
+    "description": "The border agent's stamp smells like a year you cannot locate. Declare everything. Declare nothing. The queue is also a question.",
+    "idea": "The user arrives at an international customs desk and must fill out a declaration form for everything they brought back from a trip — except the trip was a period of their life (a relationship, a bad year, a version of themselves that went somewhere and returned changed). The form asks them to declare items in categories like PERISHABLES ('any joy that may have spoiled in transit'), PROHIBITED GOODS ('certainties not permitted across this border'), ITEMS ACQUIRED ABROAD ('a way of holding your shoulders you picked up from someone else'), and AMOUNT OF CURRENCY ('how much of that time do you still have on you — round to the nearest feeling'). A customs officer — deadpan, procedural, not unkind — flags specific declarations for secondary inspection, asking follow-up questions with the clipped efficiency of someone who has seen everything and is still somehow surprised by this. Items are either CLEARED, CONFISCATED (with a receipt), or placed in QUARANTINE pending a review that has no projected completion date. At the end, a stamped entry permit is issued for the user to re-enter their current life, and the customs officer, without looking up, says: 'Welcome back. Duration of stay: unknown. Purpose of visit: ongoing.'",
+    "plan": {
+      "title": "Customs Declaration: What You Brought Back",
+      "state_variables": [
+        "phase: 'queue' | 'form' | 'inspection' | 'verdict' | 'stamp' — current stage of the customs process",
+        "formData: object keyed by category with user text inputs for each declaration field",
+        "activeField: string — which category field is currently focused",
+        "flaggedItems: array of objects {category, text, status: 'pending'|'cleared'|'confiscated'|'quarantine'} — items under review",
+        "inspectionIndex: number — which flagged item is currently being inspected",
+        "officerMessage: string — current deadpan officer dialogue",
+        "officerTyping: boolean — whether officer message is mid-typewriter animation",
+        "stampVisible: boolean — whether final stamp animation is showing",
+        "receiptItems: array of strings — confiscated items with receipt numbers",
+        "queuePosition: number — countdown from random 3-7 during queue phase"
+      ],
+      "effects": [
+        "Typewriter effect on officerMessage: when message changes, animate characters one by one at ~30ms intervals, set officerTyping true/false",
+        "Queue countdown: in 'queue' phase, decrement queuePosition every 1.2s until 0, then transition to 'form' phase with officer greeting",
+        "On entering 'inspection' phase, iterate through flaggedItems sequentially with 2s delays between officer follow-up questions",
+        "On entering 'stamp' phase, trigger stamp animation after 1s delay"
+      ],
+      "key_interactions": [
+        "Queue screen: user waits, watching position count down — a single 'Next.' button appears when queue hits 0",
+        "Form: user types freely into 4 category textareas (PERISHABLES, PROHIBITED GOODS, ITEMS ACQUIRED ABROAD, AMOUNT OF CURRENCY) then clicks 'Submit Declaration'",
+        "Inspection: for each flagged item, officer asks a follow-up question and user types a short response, then clicks 'Continue' — response influences cleared/confiscated/quarantine outcome via simple keyword heuristics",
+        "Verdict screen: animated list reveals each item's status with icon (✓ CLEARED / ✗ CONFISCATED / ⧗ QUARANTINE) and confiscated items show a receipt number",
+        "Stamp screen: large ink-stamp animation slams down, user clicks stamp to read their entry permit text, then officer delivers final line"
+      ],
+      "visual_style": "Off-white aged paper background (#f5f0e8), dark ink typography (#1a1a1a), monospace font throughout. Muted olive and rust accents for status indicators. Aesthetic: mid-century bureaucratic document — sparse, formal, slightly yellowed. Stamp is deep red-brown. Overall mood: clinical tenderness.",
+      "key_implementation_notes": "The officer's follow-up questions are drawn from a static map keyed by category, with 2-3 variants per category chosen based on whether the user's input contains emotional keywords (love, lost, gone, still, never, etc.) — this creates the illusion of attentiveness without NLP. Verdict assignment uses a simple scoring heuristic: short inputs or inputs with 'nothing'/'none' lean toward quarantine, inputs with past-tense finality lean toward confiscated, present-tense acceptance language leans cleared. The stamp animation uses a CSS transform scale+rotate via inline style toggled by state, simulating an ink stamp impact with a brief red overlay fade. All screens share a centered card container styled as a government form with ruled lines rendered as div borders."
+    }
   }
 ]
