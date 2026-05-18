@@ -1519,5 +1519,35 @@
       "visual_style": "Off-white aged paper background (#f5f0e8), dark ink typography (#1a1a1a), monospace font throughout. Muted olive and rust accents for status indicators. Aesthetic: mid-century bureaucratic document — sparse, formal, slightly yellowed. Stamp is deep red-brown. Overall mood: clinical tenderness.",
       "key_implementation_notes": "The officer's follow-up questions are drawn from a static map keyed by category, with 2-3 variants per category chosen based on whether the user's input contains emotional keywords (love, lost, gone, still, never, etc.) — this creates the illusion of attentiveness without NLP. Verdict assignment uses a simple scoring heuristic: short inputs or inputs with 'nothing'/'none' lean toward quarantine, inputs with past-tense finality lean toward confiscated, present-tense acceptance language leans cleared. The stamp animation uses a CSS transform scale+rotate via inline style toggled by state, simulating an ink stamp impact with a brief red overlay fade. All screens share a centered card container styled as a government form with ruled lines rendered as div borders."
     }
+  },
+  {
+    "date": "2026-05-18",
+    "title": "Emergency Broadcast: Your Nervous System",
+    "description": "A weather event shaped like a Tuesday insists it is not personal. The barometric pressure of almost-saying-something: falling.",
+    "idea": "The screen is formatted as a regional Emergency Alert System broadcast — the iconic black and gray striped border, the scrolling ticker, the authoritative test-pattern aesthetic — but it is issuing severe weather warnings for conditions inside the user's body right now. A rotating cast of official alerts interrupt each other: a DENSE FOG ADVISORY for the area between your sternum and a decision you keep not making, a WIND SHEAR WARNING caused by 'conflicting internal pressure systems meeting near the shoulders,' a FLASH ANXIETY WATCH that is technically not a warning but the National Atmospheric Feeling Service wants you to be aware. The user can click to 'acknowledge' each alert, which clears it but triggers a new one — acknowledging the fog causes a HIGH PRESSURE SYSTEM of sudden calm that is immediately reclassified as suspicious. A SEVERE COMFORT EVENT is treated as equally alarming as distress. The broadcast is periodically interrupted by the Emergency Alert tone (described in text as '[THAT SOUND]') and a crawl at the bottom lists school closures for 'all institutions of self-knowledge, closed until further notice, buses will run on a modified route through your chest.'",
+    "plan": {
+      "title": "Emergency Broadcast: Your Nervous System",
+      "state_variables": [
+        "alerts: array of active alert objects (id, type, severity, headline, body)",
+        "acknowledgedIds: array of dismissed alert ids",
+        "tickerText: string for bottom crawl",
+        "broadcastInterrupted: boolean for EAS tone flash state",
+        "alertQueue: array of pending alert objects to cycle in",
+        "currentAlertIndex: number tracking which alert is foregrounded"
+      ],
+      "effects": [
+        "useEffect on mount: seed initial 3-4 alerts into state",
+        "useEffect interval every 8s: trigger broadcastInterrupted flash for 1.5s simulating [THAT SOUND] moment",
+        "useEffect interval every 12s: if alertQueue not empty, push next alert into active alerts",
+        "useEffect on acknowledgedIds change: after 800ms delay, generate replacement alert from consequence map and add to queue"
+      ],
+      "key_interactions": [
+        "Click ACKNOWLEDGE button on any alert: adds id to acknowledgedIds, removes from active alerts, schedules ironic follow-up alert (fog→suspicious calm, calm→SEVERE COMFORT EVENT, anxiety→PROLONGED STILLNESS WARNING)",
+        "Click anywhere on ticker to pause/resume ticker scroll animation via state toggle",
+        "No other interactions needed — system runs itself"
+      ],
+      "visual_style": "Classic EAS aesthetic: near-black background (#0a0a0a), stark white and mid-gray text, orange and red accent bars for severity levels, monospace font throughout, thick diagonal stripe border (alternating black/#333 stripes via repeating-linear-gradient), muted institutional authority — no warmth, maximum bureaucratic dread",
+      "key_implementation_notes": "Diagonal stripe border achieved via repeating-linear-gradient on a wrapper div with thick padding inset. Ticker crawl uses a CSS keyframe animation defined via a style tag injected into document.head on mount (only external DOM touch allowed), translating from 100% to -100% on a loop — ticker text is a long static string about school closures. Alert objects carry a 'severity' field ('WATCH'|'ADVISORY'|'WARNING'|'SEVERE EVENT') that maps to color coding (yellow/orange/red/white-on-red). The [THAT SOUND] interrupt sets broadcastInterrupted true briefly, rendering a full-screen white flash overlay at low opacity with the text '[THAT SOUND]' centered in monospace — purely CSS transition driven by state."
+    }
   }
 ]
