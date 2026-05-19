@@ -1549,5 +1549,37 @@
       "visual_style": "Classic EAS aesthetic: near-black background (#0a0a0a), stark white and mid-gray text, orange and red accent bars for severity levels, monospace font throughout, thick diagonal stripe border (alternating black/#333 stripes via repeating-linear-gradient), muted institutional authority — no warmth, maximum bureaucratic dread",
       "key_implementation_notes": "Diagonal stripe border achieved via repeating-linear-gradient on a wrapper div with thick padding inset. Ticker crawl uses a CSS keyframe animation defined via a style tag injected into document.head on mount (only external DOM touch allowed), translating from 100% to -100% on a loop — ticker text is a long static string about school closures. Alert objects carry a 'severity' field ('WATCH'|'ADVISORY'|'WARNING'|'SEVERE EVENT') that maps to color coding (yellow/orange/red/white-on-red). The [THAT SOUND] interrupt sets broadcastInterrupted true briefly, rendering a full-screen white flash overlay at low opacity with the text '[THAT SOUND]' centered in monospace — purely CSS transition driven by state."
     }
+  },
+  {
+    "date": "2026-05-19",
+    "title": "Subpoena for a Dream You Had",
+    "description": "The bailiff cannot find the defendant. The defendant was a staircase. The staircase had your mother's voice.",
+    "idea": "The user receives an official court subpoena requiring them to produce a specific dream as evidence in an unnamed legal proceeding. They must answer intake questions to reconstruct the dream for the record — but the questions are written by someone who fundamentally misunderstands how dreams work ('Please list all exits used' / 'Was the other party aware they were symbolic?' / 'At what point did the location become your elementary school without changing?'). Their answers generate an official Dream Transcript, formatted as court exhibit documentation, in which a court reporter has done their best to render the dream in legal language — producing something that is both clinically precise and completely unhinged. The user can then SUBMIT the transcript, at which point the opposing counsel files an immediate motion to suppress on the grounds that 'the dream is hearsay from a version of the witness that no longer exists,' the judge sustains it, and the entire transcript is redacted line by line — except for one sentence, left visible, which is always the part the user would least want read aloud in a room.",
+    "plan": {
+      "title": "Subpoena for a Dream You Had",
+      "state_variables": [
+        "currentPhase: 'subpoena' | 'intake' | 'transcript' | 'suppression' | 'redacted' — controls which screen is shown",
+        "currentQuestion: number — index of current intake question (0-11)",
+        "answers: string[] — user's answers to all intake questions",
+        "transcriptLines: string[] — generated court-formatted lines from answers",
+        "redactedLines: boolean[] — which lines have been redacted so far",
+        "redactionIndex: number — current line being redacted in animation",
+        "survivingLineIndex: number — index of the one line that survives redaction",
+        "inputValue: string — current text input value"
+      ],
+      "effects": [
+        "When phase becomes 'suppression', trigger sequential redaction animation: set an interval that increments redactionIndex, marking each line redacted except survivingLineIndex, then transitions to 'redacted' phase when complete",
+        "When answers array reaches full length, generate transcriptLines by passing each answer through a legalTransform function that wraps user text in clinical court-reporter boilerplate"
+      ],
+      "key_interactions": [
+        "Initial subpoena screen with ACKNOWLEDGE RECEIPT button to begin intake",
+        "Intake form: one surreal bureaucratic question at a time, text input, ENTER FOR THE RECORD button advances to next question",
+        "After final question, VIEW TRANSCRIPT button generates and shows the full Dream Transcript as Exhibit A",
+        "SUBMIT TO COURT button triggers suppression sequence — motion text appears, judge sustains, redaction animation begins line by line",
+        "Final redacted view shows all lines as black bars except the surviving sentence, with a small CASE DISMISSED stamp"
+      ],
+      "visual_style": "Off-white legal document paper texture (via background color #f5f0e8), Courier New monospace throughout, black ink aesthetic, red REDACTED bars, official stamp elements in faded red. Cold, institutional, slightly fluorescent. Small print, wide margins, case numbers in headers.",
+      "key_implementation_notes": "Intake questions are hardcoded as a fixed array of 8 surreal legal questions. The legalTransform function wraps each answer in a template string like 'THE WITNESS TESTIFIED THAT [answer]. Court reporter notes: [procedural absurdity derived from question context].' The survivingLineIndex is computed once when transcript generates as the index whose source answer is longest (most intimate/detailed), ensuring it's the most revealing. Redaction animation uses setInterval in a useEffect watching redactionIndex, replacing text with a black inline-block div of matching approximate width, clearing the interval when all non-surviving lines are covered."
+    }
   }
 ]
