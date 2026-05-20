@@ -1581,5 +1581,40 @@
       "visual_style": "Off-white legal document paper texture (via background color #f5f0e8), Courier New monospace throughout, black ink aesthetic, red REDACTED bars, official stamp elements in faded red. Cold, institutional, slightly fluorescent. Small print, wide margins, case numbers in headers.",
       "key_implementation_notes": "Intake questions are hardcoded as a fixed array of 8 surreal legal questions. The legalTransform function wraps each answer in a template string like 'THE WITNESS TESTIFIED THAT [answer]. Court reporter notes: [procedural absurdity derived from question context].' The survivingLineIndex is computed once when transcript generates as the index whose source answer is longest (most intimate/detailed), ensuring it's the most revealing. Redaction animation uses setInterval in a useEffect watching redactionIndex, replacing text with a black inline-block div of matching approximate width, clearing the interval when all non-surviving lines are covered."
     }
+  },
+  {
+    "date": "2026-05-20",
+    "title": "Buffet of Unverified Emotions",
+    "description": "Twelve feelings under heat lamps. The tongs are also a feeling. Please take only what you can finish.",
+    "idea": "The screen presents a cafeteria steam-table buffet, rendered in the slightly-too-bright lighting of a hotel continental breakfast, where every tray holds a different unnamed emotional state instead of food. The user drags a tray along a rail and uses tongs to scoop portions of feelings onto their plate — but the serving sizes are enforced by a hairnet-wearing attendant who judges your portions with bureaucratic suspicion ('That's a lot of wistfulness for a Tuesday. I'm going to have to ask you to put some back.'). Each feeling has a placard with cafeteria-style descriptions: 'AMBIENT PRIDE — contains traces of embarrassment, may cause posture improvements, best served warm,' 'RETROACTIVE FONDNESS — prepared fresh daily from events that were not enjoyable at the time.' When the user brings their tray to a table, they must eat in order — clicking each feeling to 'consume' it, which triggers a brief, solemn nutritional aftermath report from the cafeteria dietitian. When the tray is cleared, a hairnet attendant wordlessly refills it with whatever was left in the trays at closing time. The sign above reads: FEELINGS BAR — HOURS: ALWAYS. WE ARE ALWAYS OPEN.",
+    "plan": {
+      "title": "Buffet of Unverified Emotions",
+      "state_variables": [
+        "feelings: array of 12 emotion objects with id, name, description, amount(0-3), color, servingSize",
+        "plate: array of {feelingId, portion} objects on user's plate",
+        "phase: 'buffet'|'eating'|'aftermath'|'refill' — current stage",
+        "selectedFeeling: id of feeling being scooped",
+        "attendantMessage: string shown by hairnet attendant",
+        "dietitianReport: string shown after consuming each feeling",
+        "consumedIndex: index of next feeling to eat on plate",
+        "trayPosition: 0-11 horizontal scroll index of current tray view",
+        "judgmentVisible: boolean for attendant speech bubble",
+        "refillCountdown: number for closing-time refill animation"
+      ],
+      "effects": [
+        "useEffect on plate changes — if plate has items and phase is buffet, no effect; if phase eating and consumedIndex >= plate.length, trigger refill phase",
+        "useEffect on consumedIndex — generate dietitian report string for just-consumed feeling",
+        "useEffect on refillCountdown — countdown timer that auto-refills tray with leftover amounts when it hits 0"
+      ],
+      "key_interactions": [
+        "Drag/click tray rail arrows to scroll through 12 feeling stations",
+        "Click tongs icon on a feeling to increment portion on plate (0-3 scoops), triggering attendant judgment if portion seems excessive (>1 scoop of certain feelings)",
+        "Click 'Bring to Table' button to transition from buffet to eating phase",
+        "Click each plated feeling in order to consume it — only current consumedIndex feeling is clickable",
+        "Click 'I am finished' to trigger refill phase with closing-time leftovers"
+      ],
+      "visual_style": "Fluorescent-washed warm beige and stainless steel grays; steam-table chrome borders; placard text in laminated-menu font style; feelings rendered as colored gelatinous blobs in rectangular trays; overall mood is institutional tenderness — the sadness of a sneeze guard",
+      "key_implementation_notes": "Render buffet as a horizontal scrollable row of 12 tray stations using translateX animation, each station a styled div with chrome border and colored blob SVG. Attendant judgment fires via a debounced check when portion exceeds thresholds, updating attendantMessage with rotating bureaucratic phrases. Plate rendering at bottom shows portioned blobs in order with a left-to-right consume sequence enforced by pointer-events:none on non-current items. Dietitian reports are pre-written strings keyed to feeling id, displayed in a modal-style overlay with a brief 2s auto-dismiss or manual close."
+    }
   }
 ]
