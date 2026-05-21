@@ -1616,5 +1616,38 @@
       "visual_style": "Fluorescent-washed warm beige and stainless steel grays; steam-table chrome borders; placard text in laminated-menu font style; feelings rendered as colored gelatinous blobs in rectangular trays; overall mood is institutional tenderness — the sadness of a sneeze guard",
       "key_implementation_notes": "Render buffet as a horizontal scrollable row of 12 tray stations using translateX animation, each station a styled div with chrome border and colored blob SVG. Attendant judgment fires via a debounced check when portion exceeds thresholds, updating attendantMessage with rotating bureaucratic phrases. Plate rendering at bottom shows portioned blobs in order with a left-to-right consume sequence enforced by pointer-events:none on non-current items. Dietitian reports are pre-written strings keyed to feeling id, displayed in a modal-style overlay with a brief 2s auto-dismiss or manual close."
     }
+  },
+  {
+    "date": "2026-05-21",
+    "title": "Tide Chart for Your Excuses",
+    "description": "The water knows when you are lying. The water has always known. The buoy is also lying.",
+    "idea": "The screen presents an official NOAA-style maritime tide prediction chart, but the tidal body being measured is the user's personal excuse ecosystem — a living body of water that rises and falls based on the excuses they are currently carrying. The user selects from a dropdown of excuse categories ('I was going to but,' 'It's not that I don't want to,' 'I've just been really') and the chart plots their excuse tide in real time: spring tides during high-avoidance seasons, dangerous rip currents when two excuses contradict each other, a red SMALL CRAFT ADVISORY issued whenever a new excuse is built on top of an older one without adequate load-bearing. Clicking any point on the chart summons a Coast Guard incident report for that tidal event — written in the clipped, exhausted prose of maritime emergency services — describing the excuse as a navigational hazard to nearby intentions. A PREDICTED HIGH TIDE section forecasts when the excuse will reach maximum volume, listed as 'approximately Sunday, conditions: favorable for postponement.' The chart's legend includes a depth measurement called FATHOMS OF SINCERITY, currently reading zero, with a note that the instrument may be miscalibrated or the user may be.",
+    "plan": {
+      "title": "Tide Chart for Your Excuses",
+      "state_variables": [
+        "excuseCategories: array of selected excuse category strings",
+        "chartPoints: array of {x, y, type} tide data points generated from selections",
+        "activeIncident: object|null — the Coast Guard report for a clicked point",
+        "advisories: array of active advisory strings (SMALL CRAFT, RIP CURRENT, etc.)",
+        "animFrame: number — drives wave animation tick",
+        "fathomsSincerity: number — always 0, with occasional flicker to 0.1 then back",
+        "predictedHighTide: string — computed day/condition string",
+        "hoveredPoint: index|null — for tooltip highlight"
+      ],
+      "effects": [
+        "useEffect on excuseCategories: recompute chartPoints using sine wave math seeded by category count and contradiction detection; issue advisories when stacked excuses detected",
+        "useEffect on mount: start requestAnimationFrame loop updating animFrame for wave animation; cleanup on unmount",
+        "useEffect on excuseCategories change: occasionally flicker fathomsSincerity to 0.1 for 400ms then reset to 0"
+      ],
+      "key_interactions": [
+        "Dropdown multi-select (rendered as styled list of toggleable pills) to add/remove excuse categories",
+        "Click any SVG chart point to generate and display Coast Guard incident report modal",
+        "Hover chart points to show tooltip with tidal reading and excuse classification",
+        "Close incident report modal via button or backdrop click",
+        "Passive: animated sine wave continuously undulates beneath plotted points"
+      ],
+      "visual_style": "NOAA nautical chart aesthetic — deep navy #0a1628 background, aged parchment #f5f0e8 chart area, cyan #00b4d8 water, red #d62828 advisories, monospace fonts throughout. Grid lines in faded teal. Officious, bureaucratic, slightly waterlogged.",
+      "key_implementation_notes": "SVG chart renders a composite sine wave built by summing sin components per selected category (each category adds a harmonic with unique frequency/amplitude), plotted as a polyline over a time-axis grid. Contradiction detection checks if any two selected categories share semantic opposition (hardcoded pairs) and injects a jagged spike + rip current advisory. Coast Guard reports are generated from a template literal lookup table keyed on category combinations, written in clipped past-tense maritime prose. The fathoms instrument is an SVG gauge that always resolves to 0 with a small asterisk footnote rendered below the legend."
+    }
   }
 ]
