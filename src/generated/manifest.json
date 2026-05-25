@@ -1649,5 +1649,37 @@
       "visual_style": "NOAA nautical chart aesthetic — deep navy #0a1628 background, aged parchment #f5f0e8 chart area, cyan #00b4d8 water, red #d62828 advisories, monospace fonts throughout. Grid lines in faded teal. Officious, bureaucratic, slightly waterlogged.",
       "key_implementation_notes": "SVG chart renders a composite sine wave built by summing sin components per selected category (each category adds a harmonic with unique frequency/amplitude), plotted as a polyline over a time-axis grid. Contradiction detection checks if any two selected categories share semantic opposition (hardcoded pairs) and injects a jagged spike + rip current advisory. Coast Guard reports are generated from a template literal lookup table keyed on category combinations, written in clipped past-tense maritime prose. The fathoms instrument is an SVG gauge that always resolves to 0 with a small asterisk footnote rendered below the legend."
     }
+  },
+  {
+    "date": "2026-05-25",
+    "title": "Emotional Eviction Tribunal",
+    "description": "A judge in black robes is holding court against your Tuesday morning regret, which has filed for tenancy squatters' rights.",
+    "idea": "The user is summoned to a courtroom where their current emotions are suing for permanent residency in their psyche. Feelings present legally absurd claims: 'Dread has been here longer than your memory,' 'Pride is essential for property value,' 'Indecision has established a common-law tenancy through repeated trespass.' Click to counter-sue with legal briefs that only make the situation worse. Each dismissal creates a precedent that accidentally legalizes a new emotion. By the tenth hearing, the user is being sued by their own past legal filings, which have formed a corporation.",
+    "plan": {
+      "title": "Emotional Eviction Tribunal",
+      "state_variables": [
+        "emotions: string[] – list of emotions currently suing",
+        "currentClaim: string – text of the active legal claim",
+        "courtStage: number – hearing number (0‑9)",
+        "precedents: string[] – generated precedents that legalize new emotions",
+        "lawsuitCount: number – total dismissals made",
+        "isDismissed: boolean – whether the current claim was dismissed"
+      ],
+      "effects": [
+        "Initialize emotion pool with absurd claims on mount",
+        "Handle 'File Claim' click to add a new emotion to emotions",
+        "Process dismissal: update precedents, increment lawsuitCount, possibly trigger new claim",
+        "Advance courtStage when proceeding to next hearing and check for tenth hearing",
+        "Update UI based on courtStage and isDismissed state"
+      ],
+      "key_interactions": [
+        "Click 'File Claim' to summon a new emotion with a legal brief",
+        "Click 'Counter‑Sue' to dismiss the current claim and generate a precedent",
+        "Click 'Proceed to Next Hearing' to move to the next court stage",
+        "Hover over an emotion to view its full absurd claim text"
+      ],
+      "visual_style": "A stark courtroom aesthetic in muted grays and navy with bold black judge avatar; emotions appear as red‑highlighted cards; text uses a sharp sans‑serif font to convey dry absurdity.",
+      "key_implementation_notes": "All UI is built with inline styles; useState holds emotions, precedents, and stage while useEffect manages claim flow and dismissal logic; no external libraries or fetch calls are used; the component stays self‑contained by generating new claims from the precedent list."
+    }
   }
 ]
